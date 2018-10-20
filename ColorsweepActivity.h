@@ -1,0 +1,49 @@
+#ifndef COLORSWEEPACTIVITY_H
+#define COLORSWEEPACTIVITY_H
+#include "LedActivity.h"
+
+#define SWEEP_DELAY 2000
+class ColorsweepActivity : public LedActivity {
+public:
+    ColorsweepActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
+    {
+    }
+
+    bool enter(int param)
+    {
+        ledControl->minBrightness = 0;
+    }
+
+    bool update(int param)
+    {
+        if(micros() - lastShiftTime >= SWEEP_DELAY)
+        {
+            lastShiftTime = micros();
+            coord += 1;
+           //offset++;
+        }
+
+        for (int i = 0; i < NUM_LEDS / 2; i++)
+        {
+            float r = baseDistance + (stepDistance * (i + 1));
+            int color = inoise8(coord,  r);
+            // color = qsub8(color, 16);
+            // color = qadd8(color, scale8(color, 39));
+            ledControl->leds[i] = ColorFromPalette( RainbowColors_p, color + offset, 255, LINEARBLEND);
+            ledControl->leds[NUM_LEDS - i] = ColorFromPalette( RainbowColors_p, color + offset, 255, LINEARBLEND);
+        }
+         
+        return true;
+    }
+
+    bool exit(int param)
+    {
+    }
+private:
+    long coord;
+    int offset;
+    long lastShiftTime;
+    int baseDistance = 20; // governs how drastically color changes with movement
+    int stepDistance = 20; //governs how different each pixel is from the one before it.
+};
+#endif
