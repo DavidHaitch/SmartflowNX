@@ -2,6 +2,10 @@
 #define LEDCONTROL_H
 #include <FastLED.h>
 
+//Defines that override FastLED defaults
+#define SPI_DATA 3
+#define SPI_CLOCK 4
+
 #define NUM_LEDS    138
 #define COLOR_ORDER BGR
 #define DATA_PIN    3
