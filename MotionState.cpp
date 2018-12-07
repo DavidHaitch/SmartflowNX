@@ -2,7 +2,6 @@
 MotionState::MotionState()
 {
     isEnabled = true;
-    orientation.begin(60);
 }
 
 int MotionState::Update(MPU9250_DMP* imu)
@@ -11,23 +10,18 @@ int MotionState::Update(MPU9250_DMP* imu)
     
     int dT = millis() - lastUpdateTime;
     int lag = 0;
-    if(dT < 16)
+    if ( imu->dataReady() )
+    {
+        imu->update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
+    }
+    else
     {
         return 0;
     }
 
-    lastUpdateTime = millis();
-    lag = dT - 8;
-    //Serial.println(lag);
-    if ( imu->dataReady() )
-    {
-      imu->update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
-    }
-
-    float cgX = imu->calcGyro(imu->gx);
-    float cgY = imu->calcGyro(imu->gy);
-    float cgZ = imu->calcGyro(imu->gz);
-
+    float cgX = imu->calcGyro(imu->gx) * 0.0174533;
+    float cgY = imu->calcGyro(imu->gy) * 0.0174533 * 0;
+    float cgZ = imu->calcGyro(imu->gz) * 0.0174533;
     float caX = imu->calcAccel(imu->ax);
     float caY = imu->calcAccel(imu->ay);
     float caZ = imu->calcAccel(imu->az);
@@ -36,11 +30,15 @@ int MotionState::Update(MPU9250_DMP* imu)
     float cmY = imu->calcMag(imu->my);
     float cmZ = imu->calcMag(imu->mz);
     
-    // orientation.updateIMU(cgX, cgY, cgZ,
-    //                        caX, caY, caZ);
-    orientation.update(cgX, cgY, cgZ,
+    float deltat = orientation.deltatUpdate();
+    // orientation.MadgwickUpdate(cgX, cgY, cgZ,
+    //         caX, caY, caZ,
+    //         cmX, cmY, cmZ,
+    //         deltat);
+
+    orientation.MadgwickUpdate(cgX, cgY, cgZ,
             caX, caY, caZ,
-            cmX, cmY, cmZ);
+            deltat);
 
     float accel = abs(caX) + abs(caY) + abs(caZ);
     jerk = abs(accel - lastAccel);
@@ -87,5 +85,11 @@ int MotionState::Update(MPU9250_DMP* imu)
     pointingX = cos(yawRad) * cos(pitchRad);
     pointingY = sin(yawRad) * cos(pitchRad);
     pointingZ = sin(pitchRad);
+    // Serial.print("Yaw: ");
+    // Serial.println(orientation.getYaw());
+    // Serial.print("Pitch: ");
+    // Serial.println(orientation.getPitch());
+    // Serial.print("Roll: ");
+    // Serial.println(orientation.getRoll());
     return lag;
 }

@@ -1,6 +1,7 @@
 #ifndef EFFECTS_H
 #define EFFECTS_H
-#include "BrightswingEffect.h"
-#include "BrightmapEffect.h"
-#include "IgniteEffect.h"
+#include "Effects/BrightswingEffect.h"
+#include "Effects/BrightmapEffect.h"
+#include "Effects/IgniteEffect.h"
+#include "Effects/SparkleEffect.h"
 #endif

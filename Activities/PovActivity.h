@@ -1,7 +1,7 @@
 #ifndef POVACTIVITY_H
 #define POVACTIVITY_H
 #include "LedActivity.h"
-#include "DualHeartsData.h"
+#include "../PovData/DualHeartsData.h"
 
 #define FPS 24000
 

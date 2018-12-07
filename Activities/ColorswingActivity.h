@@ -6,7 +6,7 @@ class ColorswingActivity : public LedActivity {
 public:
     ColorswingActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
     {
-        palette = CRGBPalette16(CRGB::Purple, CRGB::Blue, CRGB::Green, CRGB::Yellow);
+        palette = CRGBPalette16(CRGB::Red, CRGB::Green, CRGB::Blue, CRGB::Yellow);
     }
 
     bool enter(int param)

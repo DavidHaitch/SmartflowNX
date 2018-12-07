@@ -2,5 +2,5 @@
     "board": "adafruit:samd:adafruit_gemma_m0",
     "sketch": "SmartflowNX.ino",
     "output": "../build",
-    "port": "COM10"
+    "port": "COM11"
 }

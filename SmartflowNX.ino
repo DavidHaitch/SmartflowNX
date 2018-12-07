@@ -12,8 +12,10 @@ LedControl ledControl;
 IgniteEffect ignite(&motionState, &ledControl);
 BrightswingEffect brightswing(&motionState, &ledControl);
 BrightmapEffect brightmap(&motionState, &ledControl);
+SparkleEffect sparkle(&motionState, &ledControl);
 
-ColormapActivity colormap(&motionState, &ledControl);
+ColormapActivity colormap(&motionState, &ledControl, 600, 28);
+ColormapActivity colormap_frantic(&motionState, &ledControl, 6000, 28);
 ColorswingActivity colorswing(&motionState, &ledControl);
 FiremapActivity firemap(&motionState, &ledControl);
 ColorsweepActivity colorsweep(&motionState, &ledControl);
@@ -21,11 +23,11 @@ PovActivity pov(&motionState, &ledControl);
 SiezureActivity zap(&motionState, &ledControl);
 PlasmaActivity plasma(&motionState, &ledControl);
 
-#define NUM_BASE_ACTIVITIES 7
-LedActivity* baseActivities[NUM_BASE_ACTIVITIES] = { &colormap, &colorswing, &firemap, &colorsweep, &pov, &zap, &plasma };
-LedEffect* effects[NUM_BASE_ACTIVITIES] = { &brightswing, &brightmap, &brightmap, &brightmap, &brightswing, &brightswing, &brightswing };
+#define NUM_BASE_ACTIVITIES 8
+LedActivity* baseActivities[NUM_BASE_ACTIVITIES] = { &colormap,    &colormap_frantic, &colorswing, &firemap,     &colorsweep, &pov,         &zap,         &plasma };
+LedEffect* effects[NUM_BASE_ACTIVITIES] =          { &brightswing, &brightswing,      &brightmap,  &brightswing, &sparkle,    &brightswing, &brightswing, &brightswing };
 #define BRIGHTNESS_SETTINGS 3
-int brightnesses[BRIGHTNESS_SETTINGS] = { 255, 96, 16 };
+int brightnesses[BRIGHTNESS_SETTINGS] = { 255, 96, 32 };
 
 LedActivity* base;
 LedEffect* effect;
@@ -44,12 +46,12 @@ void setup()
         }
     }
 
-    imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
     imu.setGyroFSR(1000);
     imu.setAccelFSR(4); 
-    imu.setLPF(98); 
+    //imu.setLPF(98); 
     imu.setSampleRate(1000);
     imu.setCompassSampleRate(100);
+    imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
     base = &colormap;
     effect = &brightswing;
     ledControl.maxBrightness = 255;
@@ -65,9 +67,10 @@ LedActivity* transitionActivity(LedActivity* from, LedActivity* to)
 bool configured = false;
 void loop()
 {
-    if(millis() < 500) return; // Allow sensors to settle before advancing.
+    if(millis() < 250) return; // Allow sensors to settle before advancing.
     long start = millis();
     motionState.Update(&imu);
+
     base->update(0);
 
     if(!configured)
@@ -105,6 +108,4 @@ void loop()
     }
 
     ledControl.Refresh();
-
-    //Serial.println(millis() - start);
 }

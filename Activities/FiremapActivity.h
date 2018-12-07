@@ -6,8 +6,10 @@ class FiremapActivity : public LedActivity {
 public:
     FiremapActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
     {
-        palette = CRGBPalette16(CRGB::DarkRed, CRGB::Red, CRGB::DarkRed, CRGB::OrangeRed, CRGB::DarkOrange, CRGB::Orange, CRGB::Yellow, CRGB::Yellow,
-                                CRGB::Yellow, CRGB::Yellow, CRGB::Orange, CRGB::DarkOrange, CRGB::OrangeRed, CRGB::DarkRed, CRGB::Red, CRGB::DarkRed);
+        palette = CRGBPalette16(CRGB::Black, CRGB::Red, CRGB::Black, CRGB::OrangeRed, CRGB::Black, CRGB::Orange, CRGB::Black, CRGB::Yellow,
+                                CRGB::Black, CRGB::Orange, CRGB::Black, CRGB::DarkOrange, CRGB::Black, CRGB::OrangeRed, CRGB::Black, CRGB::DarkRed);
+        // palette = CRGBPalette16(CRGB::DarkRed, CRGB::Red, CRGB::DarkRed, CRGB::OrangeRed, CRGB::DarkOrange, CRGB::Orange, CRGB::Yellow, CRGB::Yellow,
+        //                         CRGB::Yellow, CRGB::Yellow, CRGB::Orange, CRGB::DarkOrange, CRGB::OrangeRed, CRGB::DarkRed, CRGB::Red, CRGB::DarkRed);
     }
 
     CRGBPalette16 palette;
@@ -29,7 +31,7 @@ public:
         for (int i = 0; i <= fourth; i++)
         {
             float r = baseDistance + (stepDistance * (i + 1));
-            int c = inoise8(motionState->pointingX * r, motionState->pointingY * r, motionState->pointingZ * r);
+            int c = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);            
             CRGB color = ColorFromPalette( palette, c + shift, 255, LINEARBLEND);
             int led = fourth - i;
             ledControl->leds[led] = color;

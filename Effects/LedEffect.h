@@ -1,7 +1,7 @@
 #ifndef LEDEFFECT_H
 #define LEDEFFECT_H
-#include "MotionState.h"
-#include "LedControl.h"
+#include "../MotionState.h"
+#include "../LedControl.h"
 
 class LedEffect {
 public:

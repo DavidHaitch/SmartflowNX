@@ -14,7 +14,7 @@ public:
         for (int i = 0; i <= fourth; i++)
         {
             float r = baseDistance + (stepDistance * (i + 1));
-            int b = inoise8(motionState->pointingX * r, motionState->pointingY * r, motionState->pointingZ * r) + 96;
+            int b = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);
             if (b > 255) b = 255;
             int led = fourth - i;
             ledControl->leds[led].fadeToBlackBy(b);

@@ -4,9 +4,11 @@
 
 class ColormapActivity : public LedActivity {
 public:
-    ColormapActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
+    ColormapActivity(MotionState* _motionState, LedControl* _ledControl, int _baseDistance, int _stepDistance) : LedActivity(_motionState, _ledControl)
     {
         palette = RainbowColors_p;
+        baseDistance = _baseDistance;
+        stepDistance = _stepDistance;
     }
 
     CRGBPalette16 palette;
@@ -29,7 +31,7 @@ public:
         for (int i = 0; i <= fourth; i++)
         {
             float r = baseDistance + (stepDistance * (i + 1));
-            int c = inoise8(motionState->pointingX * r, motionState->pointingY * r, motionState->pointingZ * r);
+            int c = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);
             CRGB color = ColorFromPalette( palette, c + shift, 255, LINEARBLEND);
             //color = qsub8(color, 16);
             //color = qadd8(color, scale8(color, 39));
@@ -50,7 +52,7 @@ public:
 private:
     long lastShiftDecay = 0;
     uint8_t shift = 0;
-    int baseDistance = 300; // governs how drastically color changes with movement
-    int stepDistance = 20; //governs how different each pixel is from the one before it.
+    int baseDistance = 600; // governs how drastically color changes with movement
+    int stepDistance = 30; //governs how different each pixel is from the one before it.
 };
 #endif

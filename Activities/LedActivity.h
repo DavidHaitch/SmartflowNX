@@ -1,7 +1,7 @@
 #ifndef LEDACTIVITY_H
 #define LEDACTIVITY_H
-#include "MotionState.h"
-#include "LedControl.h"
+#include "../MotionState.h"
+#include "../LedControl.h"
 
 class LedActivity{
 public:

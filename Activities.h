@@ -1,13 +1,13 @@
 #ifndef ACTIVITIES_H
 #define ACTIVITIES_H
 #include "LedActivity.h"
-#include "ColormapActivity.h"
-#include "FiremapActivity.h"
-#include "ColorsweepActivity.h"
+#include "Activities/ColormapActivity.h"
+#include "Activities/FiremapActivity.h"
+#include "Activities/ColorsweepActivity.h"
 #include "ConfigManager.h"
-#include "SiezureActivity.h"
-#include "PovActivity.h"
-#include "SpeedtestActivity.h"
-#include "PlasmaActivity.h"
-#include "ColorswingActivity.h"
+#include "Activities/SiezureActivity.h"
+#include "Activities/PovActivity.h"
+#include "Activities/SpeedtestActivity.h"
+#include "Activities/PlasmaActivity.h"
+#include "Activities/ColorswingActivity.h"
 #endif
