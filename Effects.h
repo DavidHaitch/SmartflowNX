@@ -4,4 +4,5 @@
 #include "Effects/BrightmapEffect.h"
 #include "Effects/IgniteEffect.h"
 #include "Effects/SparkleEffect.h"
+#include "Effects/NoopEffect.h"
 #endif

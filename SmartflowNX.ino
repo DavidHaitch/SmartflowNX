@@ -13,21 +13,53 @@ IgniteEffect ignite(&motionState, &ledControl);
 BrightswingEffect brightswing(&motionState, &ledControl);
 BrightmapEffect brightmap(&motionState, &ledControl);
 SparkleEffect sparkle(&motionState, &ledControl);
+NoopEffect noop(&motionState, &ledControl);
+
+DEFINE_GRADIENT_PALETTE( pfoenix_p ) {
+  0, 0, 0, 0,
+200, 96, 0, 255,
+255, 0, 0, 0 };
 
 ColormapActivity colormap(&motionState, &ledControl, 600, 28);
 ColormapActivity colormap_frantic(&motionState, &ledControl, 6000, 28);
 ColorswingActivity colorswing(&motionState, &ledControl);
 FiremapActivity firemap(&motionState, &ledControl);
-ColorsweepActivity colorsweep(&motionState, &ledControl);
+ColorsweepActivity colorsweep(&motionState, &ledControl, RainbowColors_p);
+ColorsweepActivity pfoenix(&motionState, &ledControl, pfoenix_p);
+
 PovActivity pov(&motionState, &ledControl);
 SiezureActivity zap(&motionState, &ledControl);
 PlasmaActivity plasma(&motionState, &ledControl);
 
-#define NUM_BASE_ACTIVITIES 8
-LedActivity* baseActivities[NUM_BASE_ACTIVITIES] = { &colormap,    &colormap_frantic, &colorswing, &firemap,     &colorsweep, &pov,         &zap,         &plasma };
-LedEffect* effects[NUM_BASE_ACTIVITIES] =          { &brightswing, &brightswing,      &brightmap,  &brightswing, &sparkle,    &brightswing, &brightswing, &brightswing };
+#define NUM_BASE_ACTIVITIES 10
+LedActivity* baseActivities[NUM_BASE_ACTIVITIES] =
+    {
+        &pfoenix, 
+        &colormap,
+        &colormap_frantic,
+        &colorswing,
+        &firemap,
+        &colorsweep,
+        &pov,
+        &zap,
+        &plasma
+    };
+
+LedEffect* effects[NUM_BASE_ACTIVITIES] = 
+    { 
+        &noop,
+        &brightswing,
+        &brightswing,
+        &brightmap,
+        &brightswing,
+        &sparkle,
+        &brightswing,
+        &brightswing,
+        &brightswing
+    };
 #define BRIGHTNESS_SETTINGS 3
-int brightnesses[BRIGHTNESS_SETTINGS] = { 255, 96, 32 };
+int brightnesses[BRIGHTNESS_SETTINGS] = { 64, 32, 255 };
+int powerLevels[BRIGHTNESS_SETTINGS] = { 150, 300, 1000 };
 
 LedActivity* base;
 LedEffect* effect;
@@ -52,9 +84,10 @@ void setup()
     imu.setSampleRate(1000);
     imu.setCompassSampleRate(100);
     imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
-    base = &colormap;
-    effect = &brightswing;
     ledControl.maxBrightness = 255;
+    FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);
+    base = baseActivities[0];
+    effect = effects[0];
 }
 
 LedActivity* transitionActivity(LedActivity* from, LedActivity* to)
@@ -79,7 +112,8 @@ void loop()
 
         if(c == 1)
         {
-            ledControl.maxBrightness = brightnesses[config.options[0]%BRIGHTNESS_SETTINGS];
+            //ledControl.maxBrightness = brightnesses[config.options[0]%BRIGHTNESS_SETTINGS];
+            FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[config.options[0]%BRIGHTNESS_SETTINGS]);
             base = transitionActivity(base, base); //Reinit base activity with new settings.
         }
 

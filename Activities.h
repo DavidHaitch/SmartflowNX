@@ -1,6 +1,6 @@
 #ifndef ACTIVITIES_H
 #define ACTIVITIES_H
-#include "LedActivity.h"
+//#include "LedActivity.h"
 #include "Activities/ColormapActivity.h"
 #include "Activities/FiremapActivity.h"
 #include "Activities/ColorsweepActivity.h"
