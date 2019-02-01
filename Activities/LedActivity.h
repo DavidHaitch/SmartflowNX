@@ -11,7 +11,7 @@ public:
         ledControl = _ledControl;
     }
     
-    virtual bool update(int param) = 0;
+    virtual bool update(bool realMode) = 0;
     virtual bool enter(int param) = 0;
     virtual bool exit(int param) = 0;
     ~LedActivity()

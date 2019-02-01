@@ -14,7 +14,7 @@ public:
         ledControl->minBrightness = 0;
     }
 
-    bool update(int param)
+    bool update(bool realMode)
     {
         int c = map((motionState->angularVelocityPercent / 100.0) * 100, 0, 100, 0, 255);
         CRGB color = ColorFromPalette( palette, c, 255, NOBLEND);

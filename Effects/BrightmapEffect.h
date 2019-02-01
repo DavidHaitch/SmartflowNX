@@ -10,17 +10,12 @@ public:
 
     bool apply(int param)
     {
-        int fourth = NUM_LEDS / 4;  
-        for (int i = 0; i <= fourth; i++)
+        for (int i = 0; i < NUM_LEDS; i++)
         {
             float r = baseDistance + (stepDistance * (i + 1));
             int b = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);
             if (b > 255) b = 255;
-            int led = fourth - i;
-            ledControl->leds[led].fadeToBlackBy(b);
-            ledControl->leds[fourth + i].fadeToBlackBy(b);
-            ledControl->leds[NUM_LEDS - led].fadeToBlackBy(b);
-            ledControl->leds[NUM_LEDS - (fourth + i)].fadeToBlackBy(b);
+            ledControl->leds[i].fadeToBlackBy(b);
         }
 
         return true;

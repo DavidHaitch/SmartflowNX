@@ -15,7 +15,7 @@ public:
     {
         long now = millis();
 
-        if(smackCount > 4)
+        if(smackCount > 3)
         {
             smackCount = 0;
         }
@@ -25,7 +25,7 @@ public:
             ledControl->leds[i] = CRGB::White;
         }
 
-        if(motionState->jerk > 1.75 && now - lastSmackTime > 250)
+        if(motionState->jerk > 2.75 && now - lastSmackTime > 250)
         {
             lastSmackTime = now;
             smackCount++;

@@ -13,8 +13,13 @@ public:
         ledControl->minBrightness = ledControl->maxBrightness / 2;
     }
 
-    bool update(int param)
+    bool update(bool realMode)
     {
+        if(realMode)
+        {
+            motionState->isEnabled = false;
+        }
+
         if(count%2 == 0)
         {
             for (int i = 0; i < NUM_LEDS; i++)
@@ -27,7 +32,7 @@ public:
             offset+=24;
             for (int i = 0; i < NUM_LEDS; i++)
             {
-                ledControl->leds[i] = ColorFromPalette(RainbowColors_p, offset, 255, LINEARBLEND);
+                ledControl->leds[i] = ColorFromPalette(RainbowColors_p, offset + (i*8), 255, LINEARBLEND);
             }
 
         }
@@ -47,7 +52,7 @@ public:
 private:
     int offset;
     int count;
-    const int shiftDelay = 5;
+    const int shiftDelay = 10;
     long lastShift;
 };
 #endif

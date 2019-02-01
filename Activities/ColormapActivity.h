@@ -4,42 +4,33 @@
 
 class ColormapActivity : public LedActivity {
 public:
-    ColormapActivity(MotionState* _motionState, LedControl* _ledControl, int _baseDistance, int _stepDistance) : LedActivity(_motionState, _ledControl)
+    ColormapActivity(MotionState* _motionState, LedControl* _ledControl, CRGBPalette16 _palette, int _baseDistance, int _stepDistance) : LedActivity(_motionState, _ledControl)
     {
-        palette = RainbowColors_p;
+        palette = _palette;
         baseDistance = _baseDistance;
         stepDistance = _stepDistance;
     }
 
-    CRGBPalette16 palette;
     bool enter(int param)
     {
-        ledControl->minBrightness = 0;
+        ledControl->minBrightness = 32;
     }
 
-    bool update(int param)
+    bool update(bool realMode)
     {
-        if(millis() - lastShiftDecay > 20)
+        if(millis() - lastShiftDecay > 200)
         {
-            //shift += param / 5;
+            lastShiftDecay = millis();
             if(shift > 0) shift--;
         }
+            shift = motionState->angularVelocityPercent;
 
-        shift = map(motionState->orientation.getYawRadians() * 100,-314, 314, 0, 255 );
-
-        int fourth = NUM_LEDS / 4;  
-        for (int i = 0; i <= fourth; i++)
+        for (int i = 0; i <= NUM_LEDS; i++)
         {
             float r = baseDistance + (stepDistance * (i + 1));
             int c = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);
             CRGB color = ColorFromPalette( palette, c + shift, 255, LINEARBLEND);
-            //color = qsub8(color, 16);
-            //color = qadd8(color, scale8(color, 39));
-            int led = fourth - i;
-            ledControl->leds[led] = color;
-            ledControl->leds[fourth + i] = color;
-            ledControl->leds[NUM_LEDS - led] = color;
-            ledControl->leds[NUM_LEDS - (fourth + i)] = color;
+            ledControl->leds[i] = color;
         }
                 
         return true;
@@ -54,5 +45,6 @@ private:
     uint8_t shift = 0;
     int baseDistance = 600; // governs how drastically color changes with movement
     int stepDistance = 30; //governs how different each pixel is from the one before it.
+    CRGBPalette16 palette;
 };
 #endif

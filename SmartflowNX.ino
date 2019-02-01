@@ -1,11 +1,10 @@
-#include <Wire.h>
-#include <SparkFunMPU9250-DMP.h>
+#include "MPU9250.h"
+MPU9250 imu(Wire, 0x68);
 #include "MotionState.h"
 #include "LedControl.h"
 #include "Activities.h"
 #include "Effects.h"
 
-MPU9250_DMP imu;
 MotionState motionState;
 LedControl ledControl;
 
@@ -20,8 +19,8 @@ DEFINE_GRADIENT_PALETTE( pfoenix_p ) {
 200, 96, 0, 255,
 255, 0, 0, 0 };
 
-ColormapActivity colormap(&motionState, &ledControl, 600, 28);
-ColormapActivity colormap_frantic(&motionState, &ledControl, 6000, 28);
+ColormapActivity colormap(&motionState, &ledControl, RainbowColors_p, 200, 32);
+ColormapActivity colormap_frantic(&motionState, &ledControl, RainbowColors_p, 6000, 28);
 ColorswingActivity colorswing(&motionState, &ledControl);
 FiremapActivity firemap(&motionState, &ledControl);
 ColorsweepActivity colorsweep(&motionState, &ledControl, RainbowColors_p);
@@ -31,31 +30,29 @@ PovActivity pov(&motionState, &ledControl);
 SiezureActivity zap(&motionState, &ledControl);
 PlasmaActivity plasma(&motionState, &ledControl);
 
-#define NUM_BASE_ACTIVITIES 10
+#define NUM_BASE_ACTIVITIES 8
 LedActivity* baseActivities[NUM_BASE_ACTIVITIES] =
     {
-        &pfoenix, 
         &colormap,
         &colormap_frantic,
-        &colorswing,
         &firemap,
         &colorsweep,
         &pov,
         &zap,
-        &plasma
+        &plasma,
+        &colorswing
     };
 
 LedEffect* effects[NUM_BASE_ACTIVITIES] = 
     { 
-        &noop,
         &brightswing,
         &brightswing,
-        &brightmap,
         &brightswing,
         &sparkle,
+        &noop,
+        &noop,
         &brightswing,
-        &brightswing,
-        &brightswing
+        &brightmap
     };
 #define BRIGHTNESS_SETTINGS 3
 int brightnesses[BRIGHTNESS_SETTINGS] = { 64, 32, 255 };
@@ -70,20 +67,9 @@ bool effectEnable = false;
 bool isIgniting = true;
 void setup()
 {
-    if (imu.begin() != INV_SUCCESS)
-    {
-        while (1)
-        {
-            delay(5000);
-        }
-    }
-
-    imu.setGyroFSR(1000);
-    imu.setAccelFSR(4); 
-    //imu.setLPF(98); 
-    imu.setSampleRate(1000);
-    imu.setCompassSampleRate(100);
-    imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
+    imu.begin();
+    imu.setAccelRange(MPU9250::ACCEL_RANGE_4G);
+    imu.setGyroRange(MPU9250::GYRO_RANGE_500DPS);
     ledControl.maxBrightness = 255;
     FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);
     base = baseActivities[0];
@@ -100,14 +86,14 @@ LedActivity* transitionActivity(LedActivity* from, LedActivity* to)
 bool configured = false;
 void loop()
 {
-    if(millis() < 250) return; // Allow sensors to settle before advancing.
     long start = millis();
+    
     motionState.Update(&imu);
+    base->update(configured);
 
-    base->update(0);
-
-    if(!configured)
+    if(!configured && millis() > 5000)
     {
+        
         int c = config.configure(&motionState, &ledControl);
 
         if(c == 1)

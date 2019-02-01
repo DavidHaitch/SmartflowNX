@@ -4,41 +4,35 @@ MotionState::MotionState()
     isEnabled = true;
 }
 
-int MotionState::Update(MPU9250_DMP* imu)
+int MotionState::Update(MPU9250* imu)
 {
     if(!isEnabled) return 0;
     
     int dT = millis() - lastUpdateTime;
     int lag = 0;
-    if ( imu->dataReady() )
-    {
-        imu->update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
-    }
-    else
-    {
-        return 0;
-    }
+    imu->readSensor();
 
-    float cgX = imu->calcGyro(imu->gx) * 0.0174533;
-    float cgY = imu->calcGyro(imu->gy) * 0.0174533 * 0;
-    float cgZ = imu->calcGyro(imu->gz) * 0.0174533;
-    float caX = imu->calcAccel(imu->ax);
-    float caY = imu->calcAccel(imu->ay);
-    float caZ = imu->calcAccel(imu->az);
+    float cgX = imu->getGyroX_rads() / 16;
+    //float cgY = imu->calcGyro(imu->gy) * 0.0174533 * 0;
+    float cgY = imu->getGyroY_rads();
+    float cgZ = imu->getGyroZ_rads();
+    float caX = imu->getAccelX_mss();
+    float caY = imu->getAccelY_mss();
+    float caZ = imu->getAccelZ_mss();
 
-    float cmX = imu->calcMag(imu->mx);
-    float cmY = imu->calcMag(imu->my);
-    float cmZ = imu->calcMag(imu->mz);
+    float cmX = imu->getMagX_uT();
+    float cmY = imu->getMagY_uT();
+    float cmZ = imu->getMagZ_uT();
     
     float deltat = orientation.deltatUpdate();
-    // orientation.MadgwickUpdate(cgX, cgY, cgZ,
-    //         caX, caY, caZ,
-    //         cmX, cmY, cmZ,
-    //         deltat);
-
     orientation.MadgwickUpdate(cgX, cgY, cgZ,
             caX, caY, caZ,
+            cmX, cmY, cmZ,
             deltat);
+
+    // orientation.MahonyUpdate(cgX, cgY, cgZ,
+    //         caX, caY, caZ,
+    //         deltat);
 
     float accel = abs(caX) + abs(caY) + abs(caZ);
     jerk = abs(accel - lastAccel);
@@ -48,7 +42,7 @@ int MotionState::Update(MPU9250_DMP* imu)
         jerkPercent = 100;
     }
 
-    if(maxJerk < 1 * jerk)
+    if(maxJerk < 1.5 * jerk)
     {
         //We don't have enough samples to really make sense.
         jerkPercent = 0;
@@ -62,7 +56,7 @@ int MotionState::Update(MPU9250_DMP* imu)
 
     // Y axis is not factored into angular velocity, because that represents the roll axis.
     // For applications where the SmartFlow board does not point along the axis of the prop, this must be changed.
-    angularVelocity = abs(cgX) + abs(cgZ);
+    angularVelocity = abs(cgY) + abs(cgZ);
     if(angularVelocity > maxAngularVelocity)
     {
         maxAngularVelocity = angularVelocity;

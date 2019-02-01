@@ -19,7 +19,7 @@ public:
         ledControl->minBrightness = 0;
     }
 
-    bool update(int param)
+    bool update(bool realMode)
     {
         if(millis() - lastShiftTime > 100)
         {
@@ -27,17 +27,12 @@ public:
             shift += 1;
         }
 
-        int fourth = NUM_LEDS / 4;  
-        for (int i = 0; i <= fourth; i++)
+        for (int i = 0; i < NUM_LEDS; i++)
         {
             float r = baseDistance + (stepDistance * (i + 1));
             int c = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);            
             CRGB color = ColorFromPalette( palette, c + shift, 255, LINEARBLEND);
-            int led = fourth - i;
-            ledControl->leds[led] = color;
-            ledControl->leds[fourth + i] = color;
-            ledControl->leds[NUM_LEDS - led] = color;
-            ledControl->leds[NUM_LEDS - (fourth + i)] = color;
+            ledControl->leds[i] = color;
         }
                 
         return true;

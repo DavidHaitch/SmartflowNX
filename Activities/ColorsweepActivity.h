@@ -15,7 +15,7 @@ public:
         ledControl->minBrightness = 0;
     }
 
-    bool update(int param)
+    bool update(bool realMode)
     {
         if(micros() - lastShiftTime >= SWEEP_DELAY)
         {
@@ -24,14 +24,13 @@ public:
            //offset++;
         }
 
-        for (int i = 0; i < NUM_LEDS / 2; i++)
+        for (int i = 0; i < NUM_LEDS; i++)
         {
             float r = baseDistance + (stepDistance * (i + 1));
             int color = inoise8(coord,  r);
             // color = qsub8(color, 16);
             // color = qadd8(color, scale8(color, 39));
             ledControl->leds[i] = ColorFromPalette( palette, color + offset, 255, LINEARBLEND);
-            ledControl->leds[NUM_LEDS - i] = ColorFromPalette( palette, color + offset, 255, LINEARBLEND);
         }
          
         return true;

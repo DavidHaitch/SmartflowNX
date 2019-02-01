@@ -2,7 +2,7 @@
 #define MOTIONSTATE_H
 #include "SensorFusion.h"
 //#include <MahonyAHRS.h>
-#include <SparkFunMPU9250-DMP.h>
+#include "MPU9250.h"
 
 class MotionState
 {
@@ -17,7 +17,7 @@ public:
     float pointingX;
     float pointingY;
     float pointingZ;
-    int Update(MPU9250_DMP* imu); // returns milliseconds if processing falls behind filter rate.
+    int Update(MPU9250* imu); // returns milliseconds if processing falls behind filter rate.
 private:
     float maxAngularVelocity;
     float maxJerk;

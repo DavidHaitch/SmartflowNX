@@ -14,7 +14,7 @@ public:
         ledControl->minBrightness = 0;
     }
 
-    bool update(int param)
+    bool update(bool realMode)
     {
         step++;
         step %= NUM_LEDS/2;

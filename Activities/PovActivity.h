@@ -1,7 +1,7 @@
 #ifndef POVACTIVITY_H
 #define POVACTIVITY_H
 #include "LedActivity.h"
-#include "../PovData/DualHeartsData.h"
+#include "../PovData/FzBnData.h"
 
 #define FPS 24000
 
@@ -18,21 +18,25 @@ public:
         ledControl->minBrightness = ledControl->maxBrightness / 2;
     }
 
-    bool update(int param)
+    bool update(bool realMode)
     {
+        if(realMode)
+        {
+            motionState->isEnabled = false;
+        }
+
         if(micros() - lastFrameChange > frameDelay)
         {
             lastFrameChange = micros();
             frame++;
         }
 
-        for (int i=0; i<NUM_LEDS / 2; i++)
+        for (int i=0; i<NUM_LEDS; i++)
         {         
-            int pixelIndex = i % (NUM_LEDS/2);
-            int index = frame*(NUM_LEDS/2)*3 + pixelIndex*3;
+            int pixelIndex = i % (NUM_LEDS);
+            int index = frame*(NUM_LEDS)*3 + pixelIndex*3;
             CRGB color = CRGB(data[index], data[index+1],data[index+2]);
             ledControl->leds[i] = color;
-            ledControl->leds[NUM_LEDS - i] = color;
         }
 
         if (frame >= FRAMES)
