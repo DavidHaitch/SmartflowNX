@@ -1,12 +1,9 @@
 #ifndef LEDCONTROL_H
 #define LEDCONTROL_H
-#define SPI_DATA 3
-#define SPI_CLOCK 4
-#include <FastLED.h>
-
 //Defines that override FastLED defaults
 #define SPI_DATA 3
 #define SPI_CLOCK 4
+#include <FastLED.h>
 
 #define TRUE_LEDS 138
 #define NUM_LEDS 32
@@ -25,6 +22,8 @@ public:
     void Clear();
     void Refresh();
 private:
+    long lastUpdate;
+    const int fps = 100000 / 24;
     CRGB trueLeds[TRUE_LEDS];
 };
 #endif

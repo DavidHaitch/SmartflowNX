@@ -11,6 +11,13 @@ LedControl::LedControl()
 
 void LedControl::Refresh()
 {
+    long now = micros();
+    if(now - lastUpdate < fps)
+    {
+        return;
+    }
+
+    lastUpdate = micros();
     int midpointOne = (TRUE_LEDS / 4) - 1;
     int midpointTwo = (TRUE_LEDS / 2) + midpointOne + 2;
     uint8_t b = map(brightness, 0, 255, minBrightness, maxBrightness);

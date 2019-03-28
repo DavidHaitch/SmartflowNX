@@ -13,7 +13,7 @@ public:
 
     bool enter(int param)
     {
-        ledControl->minBrightness = 32;
+        ledControl->minBrightness = 4;
     }
 
     bool update(bool realMode)
@@ -23,7 +23,8 @@ public:
             lastShiftDecay = millis();
             if(shift > 0) shift--;
         }
-            shift = motionState->angularVelocityPercent;
+        
+        shift = motionState->angularVelocityPercent;
 
         for (int i = 0; i <= NUM_LEDS; i++)
         {
