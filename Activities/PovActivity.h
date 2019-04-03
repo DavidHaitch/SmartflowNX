@@ -1,7 +1,7 @@
 #ifndef POVACTIVITY_H
 #define POVACTIVITY_H
 #include "LedActivity.h"
-#include "../PovData/FzBnData.h"
+#include "../PovData/FzbnData.h"
 
 #define FPS 24000
 
@@ -16,6 +16,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = ledControl->maxBrightness / 2;
+        ledControl->directMode = false;
     }
 
     bool update(bool realMode)

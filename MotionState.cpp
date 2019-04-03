@@ -12,10 +12,11 @@ int MotionState::Update(MPU9250* imu)
     int lag = 0;
     imu->readSensor();
 
-    float cgX = imu->getGyroX_rads() / 16;
-    //float cgY = imu->calcGyro(imu->gy) * 0.0174533 * 0;
+    float cgX = imu->getGyroX_rads() / 8;
+//    float cgX = imu->getGyroX_rads();
     float cgY = imu->getGyroY_rads();
     float cgZ = imu->getGyroZ_rads();
+    
     float caX = imu->getAccelX_mss();
     float caY = imu->getAccelY_mss();
     float caZ = imu->getAccelZ_mss();
@@ -25,14 +26,14 @@ int MotionState::Update(MPU9250* imu)
     float cmZ = imu->getMagZ_uT();
     
     float deltat = orientation.deltatUpdate();
-    orientation.MadgwickUpdate(cgX, cgY, cgZ,
-            caX, caY, caZ,
-            cmX, cmY, cmZ,
-            deltat);
-
-    // orientation.MahonyUpdate(cgX, cgY, cgZ,
+    // orientation.MadgwickUpdate(cgX, cgY, cgZ,
     //         caX, caY, caZ,
+    //         cmX, cmY, cmZ,
     //         deltat);
+
+    orientation.MahonyUpdate(cgX, cgY, cgZ,
+            caX, caY, caZ,
+            deltat);
 
     float accel = abs(caX) + abs(caY) + abs(caZ);
     jerk = abs(accel - lastAccel);
@@ -71,6 +72,26 @@ int MotionState::Update(MPU9250* imu)
     else
     {
         angularVelocityPercent = (angularVelocity / maxAngularVelocity) * 100;
+    }
+
+    //maxAngularVelocity *= 0.999;
+  
+    angularAcceleration = abs(angularVelocity - lastAngularVelocity);
+    lastAngularVelocity = angularVelocity;
+    if(angularAcceleration > maxAngularAcceleration)
+    {
+        maxAngularAcceleration = angularAcceleration;
+        angularAccelerationPercent = 100;
+    }
+
+    if(maxAngularAcceleration < 1 * angularAcceleration)
+    {
+        //We don't have enough samples to really make sense.
+        angularAccelerationPercent = 0;
+    }
+    else
+    {
+        angularAccelerationPercent = (angularAcceleration / maxAngularAcceleration) * 100;
     }
 
     float yawRad = orientation.getYawRadians();

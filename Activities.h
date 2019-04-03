@@ -10,4 +10,5 @@
 #include "Activities/SpeedtestActivity.h"
 #include "Activities/PlasmaActivity.h"
 #include "Activities/ColorswingActivity.h"
+#include "Activities/GravityActivity.h"
 #endif

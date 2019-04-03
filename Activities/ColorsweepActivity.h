@@ -13,6 +13,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 0;
+        ledControl->directMode = false;
     }
 
     bool update(bool realMode)

@@ -18,12 +18,13 @@ public:
     uint8_t brightness;
     uint8_t maxBrightness;
     uint8_t minBrightness;
-    CRGB leds[NUM_LEDS];
+    CRGB leds[TRUE_LEDS];
+    CRGB trueLeds[TRUE_LEDS];
     void Clear();
     void Refresh();
+    bool directMode;
 private:
     long lastUpdate;
     const int fps = 100000 / 24;
-    CRGB trueLeds[TRUE_LEDS];
 };
 #endif

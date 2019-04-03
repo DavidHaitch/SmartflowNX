@@ -22,7 +22,7 @@ public:
 
         for(int i = 1; i < smackCount + 1; i++)
         {
-            ledControl->leds[i] = CRGB::White;
+            ledControl->leds[5 + i] = CRGB::White;
         }
 
         if(motionState->jerk > 2.75 && now - lastSmackTime > 250)

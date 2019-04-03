@@ -10,7 +10,8 @@ public:
 
     bool enter(int param)
     {
-        ledControl->minBrightness = ledControl->maxBrightness / 2;
+        ledControl->minBrightness = ledControl->maxBrightness / 8;
+        ledControl->directMode = false;
     }
 
     bool update(bool realMode)
