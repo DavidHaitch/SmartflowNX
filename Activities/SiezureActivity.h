@@ -10,7 +10,7 @@ public:
 
     bool enter(int param)
     {
-        ledControl->minBrightness = ledControl->maxBrightness / 8;
+        ledControl->minBrightness = ledControl->maxBrightness / 16;
         ledControl->directMode = false;
     }
 
@@ -30,10 +30,10 @@ public:
         }
         else
         {
-            offset+=24;
+            offset+=32;
             for (int i = 0; i < NUM_LEDS; i++)
             {
-                ledControl->leds[i] = ColorFromPalette(RainbowColors_p, offset + (i*8), 255, LINEARBLEND);
+                ledControl->leds[i] = CHSV(offset, 255, 255);
             }
 
         }
@@ -53,7 +53,7 @@ public:
 private:
     int offset;
     int count;
-    const int shiftDelay = 10;
+    const int shiftDelay = 4;
     long lastShift;
 };
 #endif

@@ -70,9 +70,10 @@ bool effectEnable = false;
 bool isIgniting = true;
 void setup()
 {
+    Serial.begin(9600);
     imu.begin();
     imu.setAccelRange(MPU9250::ACCEL_RANGE_4G);
-    imu.setGyroRange(MPU9250::GYRO_RANGE_500DPS);
+    imu.setGyroRange(MPU9250::GYRO_RANGE_2000DPS);
     ledControl.maxBrightness = brightnesses[0];
     
     //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);

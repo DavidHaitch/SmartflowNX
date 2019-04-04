@@ -20,7 +20,7 @@ public:
         {
             lastCalc = millis();
             float incline = (motionState->orientation.getPitch());
-            float accel = gravity * sin(incline * (3.1415 / 180));
+            float accel = gravity * sin(incline * (3.14159/180));
             speed += accel;
             dot += speed;
             if(dot < 0)

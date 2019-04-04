@@ -12,11 +12,11 @@ int MotionState::Update(MPU9250* imu)
     int lag = 0;
     imu->readSensor();
 
-    float cgX = imu->getGyroX_rads() / 8;
-//    float cgX = imu->getGyroX_rads();
+    // float cgX = imu->getGyroX_rads() / 8;
+    float cgX = imu->getGyroX_rads();
     float cgY = imu->getGyroY_rads();
     float cgZ = imu->getGyroZ_rads();
-    
+
     float caX = imu->getAccelX_mss();
     float caY = imu->getAccelY_mss();
     float caZ = imu->getAccelZ_mss();
@@ -26,14 +26,14 @@ int MotionState::Update(MPU9250* imu)
     float cmZ = imu->getMagZ_uT();
     
     float deltat = orientation.deltatUpdate();
-    // orientation.MadgwickUpdate(cgX, cgY, cgZ,
-    //         caX, caY, caZ,
-    //         cmX, cmY, cmZ,
-    //         deltat);
-
-    orientation.MahonyUpdate(cgX, cgY, cgZ,
+    orientation.MadgwickUpdate(cgX, cgY, cgZ,
             caX, caY, caZ,
+            cmX, cmY, cmZ,
             deltat);
+
+    // orientation.MahonyUpdate(cgX, cgY, cgZ,
+    //         caX, caY, caZ,
+    //         deltat);
 
     float accel = abs(caX) + abs(caY) + abs(caZ);
     jerk = abs(accel - lastAccel);
@@ -94,17 +94,17 @@ int MotionState::Update(MPU9250* imu)
         angularAccelerationPercent = (angularAcceleration / maxAngularAcceleration) * 100;
     }
 
-    float yawRad = orientation.getYawRadians();
-    float pitchRad = orientation.getRollRadians();
+    float yawRad = orientation.getPitchRadians();
+    float pitchRad = orientation.getYawRadians();
 
     pointingX = cos(yawRad) * cos(pitchRad);
     pointingY = sin(yawRad) * cos(pitchRad);
     pointingZ = sin(pitchRad);
-    // Serial.print("Yaw: ");
-    // Serial.println(orientation.getYaw());
-    // Serial.print("Pitch: ");
-    // Serial.println(orientation.getPitch());
-    // Serial.print("Roll: ");
-    // Serial.println(orientation.getRoll());
+    // Serial.print("Orientation: ");
+    // Serial.print(pointingX);
+    // Serial.print(" ");
+    // Serial.print(pointingY);
+    // Serial.print(" ");
+    // Serial.println(pointingZ);
     return lag;
 }
