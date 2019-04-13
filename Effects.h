@@ -7,4 +7,5 @@
 #include "Effects/SparkleEffect.h"
 #include "Effects/NoopEffect.h"
 #include "Effects/GravityEffect.h"
+#include "Effects/MarchingEffect.h"
 #endif

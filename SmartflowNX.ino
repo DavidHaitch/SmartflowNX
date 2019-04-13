@@ -15,6 +15,7 @@ FireswingEffect fireswing(&motionState, &ledControl);
 BrightmapEffect brightmap(&motionState, &ledControl);
 SparkleEffect sparkle(&motionState, &ledControl);
 NoopEffect noop(&motionState, &ledControl);
+MarchingEffect marching(&motionState, &ledControl);
 
 DEFINE_GRADIENT_PALETTE( pfoenix_p ) {
   0, 0, 0, 0,
@@ -33,7 +34,7 @@ PovActivity pov(&motionState, &ledControl);
 SiezureActivity zap(&motionState, &ledControl);
 PlasmaActivity plasma(&motionState, &ledControl);
 
-#define NUM_BASE_ACTIVITIES 8
+#define NUM_BASE_ACTIVITIES 7
 LedActivity* baseActivities[NUM_BASE_ACTIVITIES] =
     {
         &gravity,
@@ -41,7 +42,6 @@ LedActivity* baseActivities[NUM_BASE_ACTIVITIES] =
         &firemap,
         &colorsweep,
         &zap,
-        &pov,
         &plasma,
         &colorswing
     };
@@ -49,16 +49,15 @@ LedActivity* baseActivities[NUM_BASE_ACTIVITIES] =
 LedEffect* effects[NUM_BASE_ACTIVITIES] = 
     { 
         &noop,
-        &brightswing,
+        &brightmap,
         &fireswing,
-        &sparkle,
-        &noop,
+        &marching,
         &noop,
         &brightswing,
         &brightmap
     };
 #define BRIGHTNESS_SETTINGS 3
-int brightnesses[BRIGHTNESS_SETTINGS] = { 32, 128, 255 };
+int brightnesses[BRIGHTNESS_SETTINGS] = { 32, 64, 192 };
 int powerLevels[BRIGHTNESS_SETTINGS] = { 150, 300, 1000 };
 
 LedActivity* base;

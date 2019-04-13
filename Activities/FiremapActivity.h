@@ -7,7 +7,7 @@ public:
     FiremapActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
     {
         palette = CRGBPalette16(CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black,
-                                CRGB::Black, CRGB::OrangeRed, CRGB::Orange, CRGB::OrangeRed, CRGB::Orange, CRGB::OrangeRed, CRGB::Black, CRGB::Black);
+                                CRGB::Red, CRGB::OrangeRed, CRGB::Orange, CRGB::OrangeRed, CRGB::Orange, CRGB::OrangeRed, CRGB::Red, CRGB::Black);
         // palette = CRGBPalette16(CRGB::DarkRed, CRGB::Red, CRGB::DarkRed, CRGB::OrangeRed, CRGB::DarkOrange, CRGB::Orange, CRGB::Yellow, CRGB::Yellow,
         //                         CRGB::Yellow, CRGB::Yellow, CRGB::Orange, CRGB::DarkOrange, CRGB::OrangeRed, CRGB::DarkRed, CRGB::Red, CRGB::DarkRed);
     }
@@ -26,7 +26,7 @@ public:
         {
             lastShiftTime = millis();
             //shift += 1;
-            coord += map(motionState->angularVelocityPercent, 0, 100, 1, 30);
+            coord += map(motionState->angularVelocityPercent, 0, 100, 20, 40);
         }
 
         for (int i = 0; i < NUM_LEDS; i++)
