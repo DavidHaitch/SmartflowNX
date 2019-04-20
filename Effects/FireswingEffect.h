@@ -11,8 +11,8 @@ public:
     bool apply(int param)
     {
         int target = 40;
-        int range = abs(100 - target) > abs(0 - target) ? abs(100 - target) : abs(0 - target);
-        int difference = abs(motionState->angularVelocityPercent - target);
+        int range = abs(255 - target) > abs(0 - target) ? abs(255 - target) : abs(0 - target);
+        int difference = abs(motionState->relativeAngularVelocity - target);
         
         ledControl->brightness = map(range - difference, 0, range, ledControl->minBrightness, ledControl->maxBrightness);
         //ledControl->brightness = 32;

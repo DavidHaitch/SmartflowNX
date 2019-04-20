@@ -1,6 +1,6 @@
 {
-    "board": "adafruit:samd:adafruit_gemma_m0",
+    "board": "adafruit:samd:adafruit_trinket_m0",
     "sketch": "SmartflowNX.ino",
     "output": "../build",
-    "port": "/dev/ttyS1"
+    "port": "COM6"
 }

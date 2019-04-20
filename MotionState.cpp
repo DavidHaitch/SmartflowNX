@@ -40,17 +40,17 @@ int MotionState::Update(MPU9250* imu)
     if(jerk > maxJerk)
     {
         maxJerk = jerk;
-        jerkPercent = 100;
+        relativeJerk = 255;
     }
 
-    if(maxJerk < 1.5 * jerk)
+    if(maxJerk < 1.0 * jerk)
     {
         //We don't have enough samples to really make sense.
-        jerkPercent = 0;
+        relativeJerk = 0;
     }
     else
     {
-        jerkPercent = (jerk / maxJerk) * 100;
+        relativeJerk = (jerk / maxJerk) * 255;
     }   
 
     lastAccel = accel;
@@ -61,17 +61,17 @@ int MotionState::Update(MPU9250* imu)
     if(angularVelocity > maxAngularVelocity)
     {
         maxAngularVelocity = angularVelocity;
-        angularVelocityPercent = 100;
+        relativeAngularVelocity = 255;
     } 
 
     if(maxAngularVelocity < 1 * angularVelocity)
     {
         //We don't have enough samples to really make sense.
-        angularVelocityPercent = 0;
+        relativeAngularVelocity = 0;
     }
     else
     {
-        angularVelocityPercent = (angularVelocity / maxAngularVelocity) * 100;
+        relativeAngularVelocity = (angularVelocity / maxAngularVelocity) * 255;
     }
 
     //maxAngularVelocity *= 0.999;
@@ -81,17 +81,17 @@ int MotionState::Update(MPU9250* imu)
     if(angularAcceleration > maxAngularAcceleration)
     {
         maxAngularAcceleration = angularAcceleration;
-        angularAccelerationPercent = 100;
+        relativeAngularAcceleration = 255;
     }
 
     if(maxAngularAcceleration < 1 * angularAcceleration)
     {
         //We don't have enough samples to really make sense.
-        angularAccelerationPercent = 0;
+        relativeAngularAcceleration = 0;
     }
     else
     {
-        angularAccelerationPercent = (angularAcceleration / maxAngularAcceleration) * 100;
+        relativeAngularAcceleration = (angularAcceleration / maxAngularAcceleration) * 255;
     }
 
     float yawRad = orientation.getPitchRadians();

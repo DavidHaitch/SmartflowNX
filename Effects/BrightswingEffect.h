@@ -10,7 +10,7 @@ public:
 
     bool apply(int param)
     {
-        ledControl->brightness = map((motionState->angularVelocityPercent / 100.0) * 100, 0, 100, 0, ledControl->maxBrightness);
+        ledControl->brightness = map(motionState->relativeAngularVelocity, 0, 255, 0, ledControl->maxBrightness);
         return false;
     }
 };

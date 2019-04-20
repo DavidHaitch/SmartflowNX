@@ -6,38 +6,66 @@ class FiremapActivity : public LedActivity {
 public:
     FiremapActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
     {
-        palette = CRGBPalette16(CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black, CRGB::Black,
-                                CRGB::Red, CRGB::OrangeRed, CRGB::Orange, CRGB::OrangeRed, CRGB::Orange, CRGB::OrangeRed, CRGB::Red, CRGB::Black);
-        // palette = CRGBPalette16(CRGB::DarkRed, CRGB::Red, CRGB::DarkRed, CRGB::OrangeRed, CRGB::DarkOrange, CRGB::Orange, CRGB::Yellow, CRGB::Yellow,
-        //                         CRGB::Yellow, CRGB::Yellow, CRGB::Orange, CRGB::DarkOrange, CRGB::OrangeRed, CRGB::DarkRed, CRGB::Red, CRGB::DarkRed);
+        palette = CRGBPalette16(
+            0x000000, 0x330000, 0x661100, 0x992200,
+            0xCC3300, 0xFF4400, 0xFF5500, 0xFF6600,
+            0xFF9900, 0xFFCC00, 0xFFFF00, 0xFFFF33,
+            0xFFFF66, 0xFFFF99, 0xFFFFCC, 0xFFFFFF
+        );
     }
-
-    CRGBPalette16 palette;
 
     bool enter(int param)
     {
         ledControl->minBrightness = 4;
-        ledControl->directMode = false;
+        ledControl->directMode = true;
     }
 
     bool update(bool realMode)
     {
-        if(millis() - lastShiftTime > 10)
+        long now = millis();
+        if(now - lastFireTick > 10)
         {
-            lastShiftTime = millis();
-            //shift += 1;
-            coord += map(motionState->angularVelocityPercent, 0, 100, 20, 40);
+            lastFireTick = now;
+            for(int i = 0; i < TRUE_LEDS/2; i++)
+            {
+                int coolingFactor = map(motionState->relativeAngularVelocity, 0, 255, 4, 8);
+                if(heat[i] >= coolingFactor) heat[i]-= coolingFactor;
+                
+                int temperature = map(motionState->relativeAngularVelocity, 0, 255, 64, 172);
+                int heatChance = map(motionState->relativeAngularVelocity, 0, 255, 12, 1);
+                if(rand()%255 < heatChance)
+                {
+                    heat[i] = temperature;
+                }
+            }
         }
 
-        for (int i = 0; i < NUM_LEDS; i++)
+        if(now - lastFireRise > 100)
         {
-            float r = baseDistance + (stepDistance * (i + 1));
-            //int c = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);            
-            int c = inoise8(coord, r);            
-            CRGB color = ColorFromPalette( palette, c + shift, 255, LINEARBLEND);
-            ledControl->leds[i] = color;
+            lastFireRise = now;
+            if(motionState->orientation.getPitch() < 0)
+            {
+                for(int i = TRUE_LEDS/2; i > 0; i--)
+                {
+                    heat[i] = heat[i - 1];
+                }
+            }
+            else
+            {
+                for(int i = 0; i < (TRUE_LEDS/2) - 1; i++)
+                {
+                   if(rand()%16 < 15) heat[i] = heat[i + 1];
+                }
+            }
         }
-                
+
+        for (int i = 0; i < TRUE_LEDS/2; i++)
+        {
+            ledControl->leds[i] = ColorFromPalette( palette, heat[i], 255, LINEARBLEND);;
+        }
+
+        blur1d(ledControl->leds, TRUE_LEDS/2, 32);
+        blur1d(ledControl->leds, TRUE_LEDS/2, 32);
         return true;
     }
 
@@ -45,10 +73,9 @@ public:
     {
     }
 private:
-    long lastShiftTime = 0;
-    uint8_t shift = 0;
-    int coord;
-    int baseDistance = 300; // governs how drastically color changes with movement
-    int stepDistance = 120; //governs how different each pixel is from the one before it.
+    int heat[TRUE_LEDS];
+    long lastFireTick = 0;
+    long lastFireRise = 0;
+    CRGBPalette16 palette;
 };
 #endif

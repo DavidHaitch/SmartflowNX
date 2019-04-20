@@ -4,19 +4,17 @@
 //#include <MahonyAHRS.h>
 #include "MPU9250.h"
 
-#define SAMPLES 128
-
 class MotionState
 {
 public:
     MotionState();
     bool isEnabled;
     SF orientation;
-    int angularVelocityPercent;
+    int relativeAngularVelocity;
     float angularVelocity;
     float angularAcceleration;
-    int angularAccelerationPercent;
-    int jerkPercent;
+    int relativeAngularAcceleration;
+    int relativeJerk;
     float jerk;
     float pointingX;
     float pointingY;
@@ -25,8 +23,6 @@ public:
 private:
     float maxAngularAcceleration;
     float maxAngularVelocity;
-    float angularVelocityHistory[SAMPLES];
-    int sampleIdx;
     float maxJerk;
     float lastAccel;
     float lastAngularVelocity;

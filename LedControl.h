@@ -25,6 +25,6 @@ public:
     bool directMode;
 private:
     long lastUpdate;
-    const int fps = 100000 / 24;
+    const int fps = 100000 / 240;
 };
 #endif

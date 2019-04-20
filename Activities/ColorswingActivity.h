@@ -17,7 +17,7 @@ public:
 
     bool update(bool realMode)
     {
-        int c = map((motionState->angularVelocityPercent / 100.0) * 100, 0, 100, 0, 255);
+        int c = motionState->relativeAngularVelocity;
         CRGB color = ColorFromPalette( palette, c, 255, NOBLEND);
         for (int i = 0; i < NUM_LEDS; i++)
         {

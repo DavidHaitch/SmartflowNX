@@ -37,9 +37,9 @@ PlasmaActivity plasma(&motionState, &ledControl);
 #define NUM_BASE_ACTIVITIES 7
 LedActivity* baseActivities[NUM_BASE_ACTIVITIES] =
     {
-        &gravity,
-        &colormap,
         &firemap,
+        &colormap,
+        &gravity,
         &colorsweep,
         &zap,
         &plasma,
@@ -50,7 +50,7 @@ LedEffect* effects[NUM_BASE_ACTIVITIES] =
     { 
         &noop,
         &brightmap,
-        &fireswing,
+        &noop,
         &marching,
         &noop,
         &brightswing,
