@@ -26,7 +26,7 @@ public:
         if(now - lastFireTick > 10)
         {
             lastFireTick = now;
-            for(int i = 0; i < TRUE_LEDS/2; i++)
+            for(int i = 0; i < NUM_LEDS/2; i++)
             {
                 int coolingFactor = map(motionState->relativeAngularVelocity, 0, 255, 4, 8);
                 if(heat[i] >= coolingFactor) heat[i]-= coolingFactor;
@@ -45,27 +45,27 @@ public:
             lastFireRise = now;
             if(motionState->orientation.getPitch() < 0)
             {
-                for(int i = TRUE_LEDS/2; i > 0; i--)
+                for(int i = NUM_LEDS/2; i > 0; i--)
                 {
                     heat[i] = heat[i - 1];
                 }
             }
             else
             {
-                for(int i = 0; i < (TRUE_LEDS/2) - 1; i++)
+                for(int i = 0; i < (NUM_LEDS/2) - 1; i++)
                 {
                    if(rand()%16 < 15) heat[i] = heat[i + 1];
                 }
             }
         }
 
-        for (int i = 0; i < TRUE_LEDS/2; i++)
+        for (int i = 0; i < NUM_LEDS/2; i++)
         {
             ledControl->leds[i] = ColorFromPalette( palette, heat[i], 255, LINEARBLEND);;
         }
 
-        blur1d(ledControl->leds, TRUE_LEDS/2, 32);
-        blur1d(ledControl->leds, TRUE_LEDS/2, 32);
+        blur1d(ledControl->leds, NUM_LEDS/2, 32);
+        blur1d(ledControl->leds, NUM_LEDS/2, 32);
         return true;
     }
 
@@ -73,7 +73,7 @@ public:
     {
     }
 private:
-    int heat[TRUE_LEDS];
+    int heat[NUM_LEDS];
     long lastFireTick = 0;
     long lastFireRise = 0;
     CRGBPalette16 palette;

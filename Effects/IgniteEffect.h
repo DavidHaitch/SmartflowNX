@@ -12,7 +12,7 @@ public:
     {
         if (ignitedLeds <= NUM_LEDS / 2)
         {
-            if(millis() - lastChangeTime >= 10)
+            if(millis() - lastChangeTime >= 20)
             {
                 ignitedLeds++;
                 lastChangeTime = millis();

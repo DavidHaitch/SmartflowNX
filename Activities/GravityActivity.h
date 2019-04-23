@@ -30,9 +30,9 @@ public:
                 speed = 0;
             }
 
-            if(dot > (TRUE_LEDS / 2) * 100)
+            if(dot > (NUM_LEDS / 2) * 100)
             {
-                dot = ((TRUE_LEDS / 2) * 100) - 10;
+                dot = ((NUM_LEDS / 2) * 100) - 10;
                 hue += abs(speed) / 4;
                 speed = 0;
             }
@@ -40,7 +40,7 @@ public:
             //if(abs(incline) < stickiness) speed = 0;
         }
 
-        for (int i = 0; i < TRUE_LEDS / 2; i++)
+        for (int i = 0; i < NUM_LEDS / 2; i++)
         {
             float dist = abs((i * 100) - dot);
             ledControl->leds[i] = CHSV(hue, 200, 255);

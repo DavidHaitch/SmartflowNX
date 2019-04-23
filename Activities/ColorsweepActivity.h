@@ -2,7 +2,7 @@
 #define COLORSWEEPACTIVITY_H
 #include "LedActivity.h"
 
-#define SWEEP_DELAY 2000
+#define SWEEP_DELAY 1000
 class ColorsweepActivity : public LedActivity {
 public:
     ColorsweepActivity(MotionState* _motionState, LedControl* _ledControl, CRGBPalette16 _palette) : LedActivity(_motionState, _ledControl)
@@ -18,11 +18,16 @@ public:
 
     bool update(bool realMode)
     {
+        if(realMode)
+        {
+            motionState->isEnabled = false;
+        }
+
         if(micros() - lastShiftTime >= SWEEP_DELAY)
         {
             lastShiftTime = micros();
             coord += 1;
-           //offset++;
+            offset++;
         }
 
         for (int i = 0; i < NUM_LEDS; i++)
@@ -45,7 +50,7 @@ private:
     int offset;
     long lastShiftTime;
     int baseDistance = 20; // governs how drastically color changes with movement
-    int stepDistance = 20; //governs how different each pixel is from the one before it.
+    int stepDistance = 50; //governs how different each pixel is from the one before it.
     CRGBPalette16 palette;
 };
 #endif

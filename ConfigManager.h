@@ -25,7 +25,7 @@ public:
             ledControl->leds[5 + i] = CRGB::White;
         }
 
-        if(motionState->jerk > 2.75 && now - lastSmackTime > 250)
+        if(motionState->jerk > 10.0 && now - lastSmackTime > 250)
         {
             lastSmackTime = now;
             smackCount++;

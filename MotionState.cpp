@@ -4,26 +4,28 @@ MotionState::MotionState()
     isEnabled = true;
 }
 
-int MotionState::Update(MPU9250* imu)
+int MotionState::Update(Adafruit_LSM9DS1* imu)
 {
     if(!isEnabled) return 0;
     
-    int dT = millis() - lastUpdateTime;
-    int lag = 0;
-    imu->readSensor();
+    long now = millis();
+    int dT = now - lastUpdateTime;
+    lastUpdateTime = now;
+    imu->read();
+    sensors_event_t a, m, g, temp;
+    imu->getEvent(&a, &m, &g, &temp); 
+    float radConv = 3.14159 / 180.0;
+    float cgX = g.gyro.x * radConv;
+    float cgY = g.gyro.y * radConv;
+    float cgZ = g.gyro.z * radConv;
 
-    // float cgX = imu->getGyroX_rads() / 8;
-    float cgX = imu->getGyroX_rads();
-    float cgY = imu->getGyroY_rads();
-    float cgZ = imu->getGyroZ_rads();
+    float caX = a.acceleration.x;
+    float caY = a.acceleration.y;
+    float caZ = a.acceleration.z;
 
-    float caX = imu->getAccelX_mss();
-    float caY = imu->getAccelY_mss();
-    float caZ = imu->getAccelZ_mss();
-
-    float cmX = imu->getMagX_uT();
-    float cmY = imu->getMagY_uT();
-    float cmZ = imu->getMagZ_uT();
+    float cmX = m.magnetic.x;
+    float cmY = m.magnetic.y;
+    float cmZ = m.magnetic.z;
     
     float deltat = orientation.deltatUpdate();
     orientation.MadgwickUpdate(cgX, cgY, cgZ,
@@ -106,5 +108,5 @@ int MotionState::Update(MPU9250* imu)
     // Serial.print(pointingY);
     // Serial.print(" ");
     // Serial.println(pointingZ);
-    return lag;
+    return dT;
 }

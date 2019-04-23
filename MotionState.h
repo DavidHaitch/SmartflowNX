@@ -2,7 +2,8 @@
 #define MOTIONSTATE_H
 #include "SensorFusion.h"
 //#include <MahonyAHRS.h>
-#include "MPU9250.h"
+#include <Adafruit_LSM9DS1.h>
+#include <Adafruit_Sensor.h> 
 
 class MotionState
 {
@@ -19,7 +20,7 @@ public:
     float pointingX;
     float pointingY;
     float pointingZ;
-    int Update(MPU9250* imu); // returns milliseconds if processing falls behind filter rate.
+    int Update(Adafruit_LSM9DS1* imu); // returns milliseconds if processing falls behind filter rate.
 private:
     float maxAngularAcceleration;
     float maxAngularVelocity;
@@ -27,6 +28,5 @@ private:
     float lastAccel;
     float lastAngularVelocity;
     long lastUpdateTime;
-    
 };
 #endif

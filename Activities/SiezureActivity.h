@@ -53,7 +53,7 @@ public:
 private:
     int offset;
     int count;
-    const int shiftDelay = 4;
+    const int shiftDelay = 20;
     long lastShift;
 };
 #endif

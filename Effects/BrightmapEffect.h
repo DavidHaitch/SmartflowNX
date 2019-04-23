@@ -14,14 +14,14 @@ public:
         {
             float r = baseDistance + (stepDistance * (i + 1));
             int b = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);
-            if (b > 255) b = 255;
+            if (b > 128) b = 255;
             ledControl->leds[i].fadeLightBy(cubicwave8(b));
         }
 
         return true;
     }
 private:
-    int baseDistance = 35; // governs how drastically color changes with movement
-    int stepDistance = 10; //governs how different each pixel is from the one before it.
+    int baseDistance = 70; // governs how drastically color changes with movement
+    int stepDistance = 30; //governs how different each pixel is from the one before it.
 };
 #endif
