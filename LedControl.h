@@ -6,7 +6,7 @@
 #include <FastLED.h>
 
 #define TRUE_LEDS 138
-#define NUM_LEDS 32
+#define NUM_LEDS 34
 #define COLOR_ORDER BGR
 #define DATA_PIN    3
 #define CLOCK_PIN   4

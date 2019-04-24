@@ -20,8 +20,8 @@ void LedControl::Refresh()
 
     lastUpdate = micros();
 
-    int midpointOne = (TRUE_LEDS / 4) - 1;
-    int midpointTwo = (TRUE_LEDS / 2) + midpointOne + 2;
+    int midpointOne = (TRUE_LEDS / 4);
+    int midpointTwo = (TRUE_LEDS / 2) + midpointOne;
     uint8_t b = map(brightness, 0, 255, minBrightness, maxBrightness);
     FastLED.setBrightness(b);
 
