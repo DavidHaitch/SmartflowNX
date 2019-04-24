@@ -7,8 +7,8 @@ public:
     FiremapActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
     {
         palette = CRGBPalette16(
-            0x000000, 0x330000, 0x661100, 0x992200,
-            0xCC3300, 0xFF4400, 0xFF5500, 0xFF6600,
+            0x000000, 0x330000, 0x660000, 0x990000,
+            0xCC2200, 0xFF4400, 0xFF5500, 0xFF6600,
             0xFF9900, 0xFFCC00, 0xFFFF00, 0xFFFF33,
             0xFFFF66, 0xFFFF99, 0xFFFFCC, 0xFFFFFF
         );
@@ -32,7 +32,7 @@ public:
                 if(heat[i] >= coolingFactor) heat[i]-= coolingFactor;
                 
                 int temperature = map(motionState->relativeAngularVelocity, 0, 255, 64, 172);
-                int heatChance = map(motionState->relativeAngularVelocity, 0, 255, 12, 1);
+                int heatChance = map(motionState->relativeAngularVelocity, 0, 255, 16, 4);
                 if(rand()%255 < heatChance)
                 {
                     heat[i] = temperature;

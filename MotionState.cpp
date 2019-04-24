@@ -28,14 +28,14 @@ int MotionState::Update(Adafruit_LSM9DS1* imu)
     float cmZ = m.magnetic.z;
     
     float deltat = orientation.deltatUpdate();
-    orientation.MadgwickUpdate(cgX, cgY, cgZ,
-            caX, caY, caZ,
-            cmX, cmY, cmZ,
-            deltat);
-
-    // orientation.MahonyUpdate(cgX, cgY, cgZ,
+    // orientation.MadgwickUpdate(cgX, cgY, cgZ,
     //         caX, caY, caZ,
+    //         cmX, cmY, cmZ,
     //         deltat);
+
+    orientation.MahonyUpdate(cgX, cgY, cgZ,
+            caX, caY, caZ,
+            deltat);
 
     float accel = abs(caX) + abs(caY) + abs(caZ);
     jerk = abs(accel - lastAccel);
