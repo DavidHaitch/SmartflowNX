@@ -17,10 +17,10 @@ SparkleEffect sparkle(&motionState, &ledControl);
 NoopEffect noop(&motionState, &ledControl);
 MarchingEffect marching(&motionState, &ledControl);
 
-DEFINE_GRADIENT_PALETTE( pfoenix_p ) {
-  0, 0, 0, 0,
-200, 96, 0, 255,
-255, 0, 0, 0 };
+DEFINE_GRADIENT_PALETTE(pfoenix_p){
+    0, 0, 0, 0,
+    200, 96, 0, 255,
+    255, 0, 0, 0};
 
 ColormapActivity colormap(&motionState, &ledControl, RainbowColors_p, 200, 32);
 ColormapActivity colormap_frantic(&motionState, &ledControl, RainbowColors_p, 6000, 28);
@@ -35,7 +35,7 @@ SiezureActivity zap(&motionState, &ledControl);
 PlasmaActivity plasma(&motionState, &ledControl);
 
 #define NUM_BASE_ACTIVITIES 7
-LedActivity* baseActivities[NUM_BASE_ACTIVITIES] =
+LedActivity *baseActivities[NUM_BASE_ACTIVITIES] =
     {
         &firemap,
         &colormap,
@@ -43,25 +43,23 @@ LedActivity* baseActivities[NUM_BASE_ACTIVITIES] =
         &colorsweep,
         &zap,
         &plasma,
-        &colorswing
-    };
+        &colorswing};
 
-LedEffect* effects[NUM_BASE_ACTIVITIES] = 
-    { 
+LedEffect *effects[NUM_BASE_ACTIVITIES] =
+    {
         &noop,
         &brightmap,
         &noop,
         &marching,
         &noop,
         &brightswing,
-        &brightmap
-    };
+        &brightmap};
 #define BRIGHTNESS_SETTINGS 3
-int brightnesses[BRIGHTNESS_SETTINGS] = { 32, 64, 192 };
-int powerLevels[BRIGHTNESS_SETTINGS] = { 150, 300, 1000 };
+int brightnesses[BRIGHTNESS_SETTINGS] = {32, 64, 192};
+int powerLevels[BRIGHTNESS_SETTINGS] = {150, 300, 1000};
 
-LedActivity* base;
-LedEffect* effect;
+LedActivity *base;
+LedEffect *effect;
 ConfigManager config;
 
 long lastDebugPrint = 0;
@@ -70,18 +68,24 @@ bool isIgniting = true;
 void setup()
 {
     Serial.begin(9600);
+    for (int i = 0; i < TRUE_LEDS; i++)
+    {
+        ledControl.leds[i] = CRGB::Red;
+    }
+
+    ledControl.Refresh();
     imu.begin();
     imu.setAccelRange(MPU9250::ACCEL_RANGE_4G);
     imu.setGyroRange(MPU9250::GYRO_RANGE_2000DPS);
     ledControl.maxBrightness = brightnesses[0];
-    
+
     //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);
     base = baseActivities[0];
     base->enter(0);
     effect = effects[0];
 }
 
-LedActivity* transitionActivity(LedActivity* from, LedActivity* to)
+LedActivity *transitionActivity(LedActivity *from, LedActivity *to)
 {
     from->exit(0);
     to->enter(0);
@@ -92,43 +96,43 @@ bool configured = false;
 void loop()
 {
     long start = millis();
-    
+
     motionState.Update(&imu);
     base->update(configured);
 
-    if(!configured && millis() > 5000)
+    if (!configured && millis() > 5000)
     {
-        
+
         int c = config.configure(&motionState, &ledControl);
 
-        if(c == 1)
+        if (c == 1)
         {
-            ledControl.maxBrightness = brightnesses[config.options[0]%BRIGHTNESS_SETTINGS];
+            ledControl.maxBrightness = brightnesses[config.options[0] % BRIGHTNESS_SETTINGS];
             //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[config.options[0]%BRIGHTNESS_SETTINGS]);
             base = transitionActivity(base, base); //Reinit base activity with new settings.
         }
 
-        if(c == 2)
+        if (c == 2)
         {
-            uint8_t mode = config.options[1]%NUM_BASE_ACTIVITIES;
+            uint8_t mode = config.options[1] % NUM_BASE_ACTIVITIES;
             ledControl.Clear();
             base = transitionActivity(base, baseActivities[mode]);
             effect = effects[mode];
         }
 
-        if(c >= 3)
-        {          
+        if (c >= 3)
+        {
             effectEnable = true;
             configured = true;
         }
     }
 
-    if(effectEnable && configured)
+    if (effectEnable && configured)
     {
         effect->apply(0);
     }
 
-    if(isIgniting)
+    if (isIgniting)
     {
         isIgniting = ignite.apply(0);
     }
