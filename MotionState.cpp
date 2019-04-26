@@ -26,14 +26,14 @@ int MotionState::Update(MPU9250* imu)
     float cmZ = imu->getMagZ_uT();
     
     float deltat = orientation.deltatUpdate();
-    orientation.MadgwickUpdate(cgX, cgY, cgZ,
-            caX, caY, caZ,
-            cmX, cmY, cmZ,
-            deltat);
-
-    // orientation.MahonyUpdate(cgX, cgY, cgZ,
+    // orientation.MadgwickUpdate(cgX, cgY, cgZ,
     //         caX, caY, caZ,
+    //         cmX, cmY, cmZ,
     //         deltat);
+
+    orientation.MahonyUpdate(cgX, cgY, cgZ,
+            caX, caY, caZ,
+            deltat);
 
     float accel = abs(caX) + abs(caY) + abs(caZ);
     jerk = abs(accel - lastAccel);
