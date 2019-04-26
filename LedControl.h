@@ -5,7 +5,7 @@
 #define SPI_CLOCK 8
 #include <FastLED.h>
 
-#define NUM_LEDS 40
+#define NUM_LEDS 64
 #define COLOR_ORDER BGR
 #define DATA_PIN    7
 #define CLOCK_PIN   8
