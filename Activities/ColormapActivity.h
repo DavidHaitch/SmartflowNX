@@ -25,7 +25,7 @@ public:
             if(shift > 0) shift--;
         }
         
-        shift = motionState->relativeAngularVelocity;
+        shift = motionState->orientation.getPitch();
 
         for (int i = 0; i <= NUM_LEDS; i++)
         {

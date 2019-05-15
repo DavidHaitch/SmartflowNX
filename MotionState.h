@@ -19,6 +19,7 @@ public:
     float pointingX;
     float pointingY;
     float pointingZ;
+    float rawAxialAccel;
     int Update(MPU9250* imu); // returns milliseconds if processing falls behind filter rate.
 private:
     float maxAngularAcceleration;

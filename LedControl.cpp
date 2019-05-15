@@ -62,7 +62,6 @@ void LedControl::Refresh()
             trueLeds[(TRUE_LEDS/2) + i] = leds[(TRUE_LEDS/2) - i - 1];
         }
     }
-    
 
     FastLED.show();
 }

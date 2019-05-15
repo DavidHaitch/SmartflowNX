@@ -51,7 +51,7 @@ LedEffect *effects[NUM_BASE_ACTIVITIES] =
         &brightmap,
         &noop,
         &marching,
-        &noop,
+        &marching,
         &brightswing,
         &brightmap};
 #define BRIGHTNESS_SETTINGS 3
@@ -67,19 +67,13 @@ bool effectEnable = false;
 bool isIgniting = true;
 void setup()
 {
-    Serial.begin(9600);
-    for (int i = 0; i < TRUE_LEDS; i++)
-    {
-        ledControl.leds[i] = CRGB::Red;
-    }
-
-    ledControl.Refresh();
     imu.begin();
     imu.setAccelRange(MPU9250::ACCEL_RANGE_4G);
     imu.setGyroRange(MPU9250::GYRO_RANGE_2000DPS);
-    ledControl.maxBrightness = brightnesses[0];
+    //ledControl.maxBrightness = brightnesses[0];
+    ledControl.maxBrightness = 255;
 
-    //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);
+    FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);
     base = baseActivities[0];
     base->enter(0);
     effect = effects[0];
@@ -107,8 +101,8 @@ void loop()
 
         if (c == 1)
         {
-            ledControl.maxBrightness = brightnesses[config.options[0] % BRIGHTNESS_SETTINGS];
-            //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[config.options[0]%BRIGHTNESS_SETTINGS]);
+            //ledControl.maxBrightness = brightnesses[config.options[0] % BRIGHTNESS_SETTINGS];
+            FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[config.options[0]%BRIGHTNESS_SETTINGS]);
             base = transitionActivity(base, base); //Reinit base activity with new settings.
         }
 
