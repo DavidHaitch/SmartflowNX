@@ -35,7 +35,7 @@ public:
                 }
             }
 
-            accel *= 1.5;
+            accel *= 3.0;
 
             speed += accel;
             dot += speed;
@@ -61,19 +61,19 @@ public:
         {
             float dist = abs((i * 100) - dot);
             float antiDist = abs((i * 100) - antiDot);
-            if(dist < 1024)
+            if(dist < 2048)
             {
-                ledControl->leds[i] += CHSV(hue, 200, 64);
-                ledControl->leds[i].fadeToBlackBy(dist / 4);
+                ledControl->leds[i] = ColorFromPalette(ForestColors_p, dist / 8, 255, LINEARBLEND);
+                ledControl->leds[i].fadeToBlackBy(dist / 8);
             }
 
-            if(antiDist < 1024)
+            if(antiDist < 2048)
             {
-                ledControl->leds[i] += CHSV(hue + 128, 200, 64);
-                ledControl->leds[i].fadeToBlackBy(antiDist / 4);
+                ledControl->leds[i] = ColorFromPalette(CloudColors_p, dist / 8, 255, LINEARBLEND);
+                ledControl->leds[i].fadeToBlackBy(antiDist / 8);
             }
             
-            if(dist > 1024 && antiDist > 1024)
+            if(dist > 2048 && antiDist > 2048)
             {
                 ledControl->leds[i] = CRGB::Black;
             }

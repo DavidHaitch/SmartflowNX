@@ -4,7 +4,7 @@
 
 class FiremapActivity : public LedActivity
 {
-  public:
+public:
     FiremapActivity(MotionState *_motionState, LedControl *_ledControl) : LedActivity(_motionState, _ledControl)
     {
         palette = CRGBPalette16(
@@ -27,12 +27,12 @@ class FiremapActivity : public LedActivity
         {
             lastFireTick = now;
             int angVel = (motionState->angularVelocity * (180 / 3.14159));
-            int spinout = 810;
+            int spinout = 900;
             for (int i = 0; i < TRUE_LEDS / 2; i++)
             {
-                int coolingFactor = map(angVel, 0, spinout, 1, 4);
+                int coolingFactor = map(angVel, 0, spinout, 2, 4);
                 int temperature = map(angVel, 0, spinout, 96, 192);
-                int heatChance = map(angVel, 0, spinout, 2, 8);
+                int heatChance = map(angVel, 0, spinout, 4, 8);
                 if (angVel > spinout)
                 {
                     temperature /= 2;
@@ -61,7 +61,7 @@ class FiremapActivity : public LedActivity
 
             for (int i = 0; i < (TRUE_LEDS / 2); i++)
             {
-                int removed = abs(heat[i]) / 16;
+                int removed = abs(heat[i]) / 32;
                 int originalHeat = heat[i];
 
                 if (i - 1 >= 0 && heat[i - 1] < originalHeat)
@@ -77,13 +77,15 @@ class FiremapActivity : public LedActivity
             }
         }
 
-        if (now - lastFireRise > 40)
+        if (now - lastFireRise > 10)
         {
             lastFireRise = now;
-
-            if (motionState->rawAxialAccel > 0)
+            // cA = angVel^2 * radius
+            float accel = motionState->rawAxialAccel * -1;
+            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.673;
+            if (centripetalAccel > abs(accel))
             {
-                for (int i = TRUE_LEDS / 2; i > 0; i--)
+                for (int i = TRUE_LEDS / 4; i > 0; i--)
                 {
                     if (heat[i] >= 0 && heat[i - 1] >= 0)
                     {
@@ -91,10 +93,7 @@ class FiremapActivity : public LedActivity
                         heat[i - 1] -= heat[i - 1] / 2;
                     }
                 }
-            }
-            else
-            {
-                for (int i = 0; i < (TRUE_LEDS / 2) - 1; i++)
+                for (int i = 0; i < (TRUE_LEDS / 4); i++)
                 {
                     if (heat[i] >= 0 && heat[i + 1] >= 0)
                     {
@@ -102,8 +101,33 @@ class FiremapActivity : public LedActivity
                         heat[i + 1] -= heat[i + 1] / 2;
                     }
                 }
+            }
+            else
+            {
+                if (motionState->rawAxialAccel > 0)
+                {
+                    for (int i = TRUE_LEDS / 2; i > 0; i--)
+                    {
+                        if (heat[i] >= 0 && heat[i - 1] >= 0)
+                        {
+                            heat[i] += heat[i - 1] / 2;
+                            heat[i - 1] -= heat[i - 1] / 2;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < (TRUE_LEDS / 2) - 1; i++)
+                    {
+                        if (heat[i] >= 0 && heat[i + 1] >= 0)
+                        {
+                            heat[i] += heat[i + 1] / 2;
+                            heat[i + 1] -= heat[i + 1] / 2;
+                        }
+                    }
 
-                heat[0] = 0;
+                    heat[0] = 0;
+                }
             }
         }
 
@@ -111,17 +135,17 @@ class FiremapActivity : public LedActivity
         {
             if (heat[i] >= 0)
             {
-                ledControl->leds[i] = ColorFromPalette(palette, heat[i], 255, LINEARBLEND);
+                ledControl->leds[i] = ColorFromPalette(HeatColors_p, heat[i], 255, LINEARBLEND);
             }
             else
             {
                 int b = (heat[i] * -1) / 64;
-                ledControl->leds[i] = CRGB(b/2,b/2,b);
+                ledControl->leds[i] = CRGB(b / 2, b / 2, b);
             }
         }
 
-        blur1d(ledControl->leds, TRUE_LEDS/2, 64);
-        blur1d(ledControl->leds, TRUE_LEDS, 92);
+        blur1d(ledControl->leds, TRUE_LEDS / 2, 64);
+        blur1d(ledControl->leds, TRUE_LEDS / 2, 92);
         return true;
     }
 
@@ -129,7 +153,7 @@ class FiremapActivity : public LedActivity
     {
     }
 
-  private:
+private:
     int heat[TRUE_LEDS];
     long lastFireTick = 0;
     long lastFireRise = 0;

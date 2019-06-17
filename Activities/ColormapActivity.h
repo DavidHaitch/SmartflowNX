@@ -25,6 +25,7 @@ public:
             if(shift > 0) shift--;
         }
         
+        int angVel = (motionState->angularVelocity * (180 / 3.14159));
         shift = motionState->orientation.getPitch();
 
         for (int i = 0; i <= NUM_LEDS; i++)
@@ -45,8 +46,8 @@ public:
 private:
     long lastShiftDecay = 0;
     uint8_t shift = 0;
-    int baseDistance = 600; // governs how drastically color changes with movement
-    int stepDistance = 30; //governs how different each pixel is from the one before it.
+    int baseDistance = 800; // governs how drastically color changes with movement
+    int stepDistance = 50; //governs how different each pixel is from the one before it.
     CRGBPalette16 palette;
 };
 #endif

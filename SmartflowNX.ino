@@ -51,7 +51,7 @@ LedEffect *effects[NUM_BASE_ACTIVITIES] =
         &brightmap,
         &noop,
         &marching,
-        &marching,
+        &noop,
         &brightswing,
         &brightmap};
 #define BRIGHTNESS_SETTINGS 3

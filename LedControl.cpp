@@ -6,7 +6,7 @@ LedControl::LedControl()
     minBrightness = 0;
     maxBrightness = 255;
     directMode = false;
-    FastLED.addLeds<LED_TYPE, BGR>(trueLeds, TRUE_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.addLeds<LED_TYPE, BGR>(trueLeds, TRUE_LEDS).setCorrection(UncorrectedColor);
     Clear();
 }
 
