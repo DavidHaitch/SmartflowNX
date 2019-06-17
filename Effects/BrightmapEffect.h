@@ -24,7 +24,7 @@ class BrightmapEffect : public LedEffect
     }
 
   private:
-    int baseDistance = 35; // governs how drastically color changes with movement
-    int stepDistance = 20; //governs how different each pixel is from the one before it.
+    int baseDistance = 100; // governs how drastically color changes with movement
+    int stepDistance = 70; //governs how different each pixel is from the one before it.
 };
 #endif
