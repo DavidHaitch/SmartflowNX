@@ -27,6 +27,8 @@ int MotionState::Update(Adafruit_LSM9DS1* imu)
     float cmY = m.magnetic.y;
     float cmZ = m.magnetic.z;
     
+    rawAxialAccel = caX;
+
     float deltat = orientation.deltatUpdate();
     // orientation.MadgwickUpdate(cgX, cgY, cgZ,
     //         caX, caY, caZ,

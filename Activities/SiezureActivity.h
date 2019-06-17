@@ -6,6 +6,9 @@ class SiezureActivity : public LedActivity {
 public:
     SiezureActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
     {
+        colors[0] = CRGB::Red;
+        colors[1] = CRGB::Green;
+        colors[2] = CRGB::Blue;
     }
 
     bool enter(int param)
@@ -30,16 +33,16 @@ public:
         }
         else
         {
-            offset+=32;
             for (int i = 0; i < NUM_LEDS; i++)
             {
-                ledControl->leds[i] = CHSV(offset, 255, 255);
+                ledControl->leds[i] = colors[count%3];
             }
 
         }
 
         if(millis() - lastShift >= shiftDelay)
         {
+            offset++;
             count++;
             lastShift = millis();
         }
@@ -51,9 +54,10 @@ public:
     {
     }
 private:
+    CRGB colors[3];
     int offset;
     int count;
-    const int shiftDelay = 20;
+    const int shiftDelay = 15;
     long lastShift;
 };
 #endif

@@ -2,9 +2,10 @@
 #define BRIGHTMAPEFFECT_H
 #include "LedEffect.h"
 
-class BrightmapEffect : public LedEffect {
-public:
-    BrightmapEffect(MotionState* _motionState, LedControl* _ledControl) : LedEffect(_motionState, _ledControl)
+class BrightmapEffect : public LedEffect
+{
+  public:
+    BrightmapEffect(MotionState *_motionState, LedControl *_ledControl) : LedEffect(_motionState, _ledControl)
     {
     }
 
@@ -14,14 +15,16 @@ public:
         {
             float r = baseDistance + (stepDistance * (i + 1));
             int b = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);
-            if (b > 128) b = 255;
+            if (b > 255)
+                b = 255;
             ledControl->leds[i].fadeLightBy(cubicwave8(b));
         }
 
         return true;
     }
-private:
-    int baseDistance = 70; // governs how drastically color changes with movement
-    int stepDistance = 30; //governs how different each pixel is from the one before it.
+
+  private:
+    int baseDistance = 100; // governs how drastically color changes with movement
+    int stepDistance = 70; //governs how different each pixel is from the one before it.
 };
 #endif

@@ -2,7 +2,7 @@
 #define COLORSWEEPACTIVITY_H
 #include "LedActivity.h"
 
-#define SWEEP_DELAY 1000
+#define SWEEP_DELAY 200
 class ColorsweepActivity : public LedActivity {
 public:
     ColorsweepActivity(MotionState* _motionState, LedControl* _ledControl, CRGBPalette16 _palette) : LedActivity(_motionState, _ledControl)
