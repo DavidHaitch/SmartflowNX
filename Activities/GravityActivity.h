@@ -24,12 +24,12 @@ public:
             float accel = motionState->rawAxialAccel * -1;
             
             // cA = angVel^2 * radius 
-            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.673;
+            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.33;
 
             if(centripetalAccel > abs(accel))
             {
                 accel = centripetalAccel;
-                if(dot < (TRUE_LEDS / 2) * 50)
+                if(dot < (NUM_LEDS / 2) * 50)
                 {
                     accel *= -1;
                 }

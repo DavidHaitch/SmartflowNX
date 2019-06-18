@@ -20,6 +20,7 @@ public:
     float pointingX;
     float pointingY;
     float pointingZ;
+    float rawAxialAccel;
     int Update(Adafruit_LSM9DS1* imu); // returns milliseconds if processing falls behind filter rate.
 private:
     float maxAngularAcceleration;

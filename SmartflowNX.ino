@@ -50,7 +50,6 @@ LedActivity *baseActivities[NUM_BASE_ACTIVITIES] =
 
 LedEffect *effects[NUM_BASE_ACTIVITIES] =
     {
-        &noop,
         &brightmap,
         &noop,
         &noop,
@@ -60,7 +59,7 @@ LedEffect *effects[NUM_BASE_ACTIVITIES] =
         &brightmap};
 #define BRIGHTNESS_SETTINGS 3
 int brightnesses[BRIGHTNESS_SETTINGS] = {32, 64, 192};
-int powerLevels[BRIGHTNESS_SETTINGS] = {150, 300, 1000};
+int powerLevels[BRIGHTNESS_SETTINGS] = {75, 150, 2000};
 
 LedActivity *base;
 LedEffect *effect;
@@ -85,7 +84,7 @@ void showBatteryVoltage()
     int mapped = map(vbat * 10.0, 33, 42, 0, NUM_LEDS/2);
     ledControl.Clear();
     CRGB c = CRGB::Green;
-    if(vbat >= 3.6 && vbat <= 3.8)
+    if(vbat >= 3.6 && vbat <= 3.9)
     {
         c = CRGB::Blue;
     }

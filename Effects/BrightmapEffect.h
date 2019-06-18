@@ -15,7 +15,7 @@ class BrightmapEffect : public LedEffect
         {
             float r = baseDistance + (stepDistance * (i + 1));
             int b = inoise8(abs(motionState->pointingX) * r, abs(motionState->pointingY) * r, abs(motionState->pointingZ) * r);
-            if (b > 255)
+            if (b > 192)
                 b = 255;
             ledControl->leds[i].fadeLightBy(cubicwave8(b));
         }

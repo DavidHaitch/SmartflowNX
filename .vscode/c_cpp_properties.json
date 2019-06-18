@@ -7,8 +7,7 @@
                 "/home/david/.arduino15/packages/adafruit/hardware/samd/1.2.3/**"
             ],
             "forcedInclude": [
-                "C:\\Users\\David\\AppData\\Local\\Arduino15\\packages\\adafruit\\hardware\\samd\\1.2.1\\cores\\arduino\\Arduino.h",
-                "/home/david/.arduino15/packages/adafruit/hardware/samd/1.2.3/cores/arduino/Arduino.h"
+                "C:\\Users\\David\\AppData\\Local\\Arduino15\\packages\\adafruit\\hardware\\samd\\1.2.1\\cores\\arduino\\Arduino.h"
             ],
             "intelliSenseMode": "msvc-x64",
             "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/cl.exe",

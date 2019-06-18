@@ -27,7 +27,7 @@ public:
         {
             lastFireTick = now;
             int angVel = (motionState->angularVelocity * (180 / 3.14159));
-            int spinout = 900;
+            int spinout = 720;
             for (int i = 0; i < NUM_LEDS / 2; i++)
             {
                 int coolingFactor = map(angVel, 0, spinout, 2, 4);
@@ -82,7 +82,7 @@ public:
             lastFireRise = now;
             // cA = angVel^2 * radius
             float accel = motionState->rawAxialAccel * -1;
-            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.673;
+            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.33;
             if (centripetalAccel > abs(accel))
             {
                 for (int i = NUM_LEDS / 4; i > 0; i--)
