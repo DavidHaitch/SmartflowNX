@@ -53,12 +53,12 @@ LedEffect *effects[NUM_BASE_ACTIVITIES] =
         &brightmap,
         &noop,
         &noop,
-        &marching,
+        &noop,
         &noop,
         &brightswing,
         &brightmap};
 #define BRIGHTNESS_SETTINGS 3
-int brightnesses[BRIGHTNESS_SETTINGS] = {32, 64, 192};
+int brightnesses[BRIGHTNESS_SETTINGS] = {32, 64, 255};
 int powerLevels[BRIGHTNESS_SETTINGS] = {75, 150, 2000};
 
 LedActivity *base;
@@ -142,15 +142,15 @@ void loop()
     long renderStart = millis();
     base->update(configured);
 
-    if(!configured && millis() > 2000)
+    if(!configured && millis() > 5000)
     {
 
         int c = config.configure(&motionState, &ledControl);
 
         if (c == 1)
         {
-            //ledControl.maxBrightness = brightnesses[config.options[0] % BRIGHTNESS_SETTINGS];
-            FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[config.options[0]%BRIGHTNESS_SETTINGS]);
+            ledControl.maxBrightness = brightnesses[config.options[0] % BRIGHTNESS_SETTINGS];
+            //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[config.options[0]%BRIGHTNESS_SETTINGS]);
             base = transitionActivity(base, base); //Reinit base activity with new settings.
         }
 

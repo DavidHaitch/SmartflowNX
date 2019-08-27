@@ -67,18 +67,12 @@ int MotionState::Update(Adafruit_LSM9DS1* imu)
         maxAngularVelocity = angularVelocity;
         relativeAngularVelocity = 255;
     } 
-
-    if(maxAngularVelocity < 1 * angularVelocity)
-    {
-        //We don't have enough samples to really make sense.
-        relativeAngularVelocity = 0;
-    }
     else
     {
-        relativeAngularVelocity = (angularVelocity / maxAngularVelocity) * 255;
+        relativeAngularVelocity = (angularVelocity / maxAngularVelocity) * 255.0;        
     }
-
-    //maxAngularVelocity *= 0.999;
+    
+    maxAngularVelocity *= 0.99;
   
     angularAcceleration = abs(angularVelocity - lastAngularVelocity);
     lastAngularVelocity = angularVelocity;
