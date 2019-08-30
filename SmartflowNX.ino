@@ -1,7 +1,9 @@
+#define BATON
+
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_LSM9DS1.h>
-#include <Adafruit_Sensor.h> 
+#include <Adafruit_Sensor.h>
 #include "MotionState.h"
 #include "LedControl.h"
 #include "Activities.h"
@@ -81,23 +83,25 @@ float getBatteryVolts()
 void showBatteryVoltage()
 {
     float vbat = getBatteryVolts();
-    int mapped = map(vbat * 10.0, 33, 42, 0, NUM_LEDS/2);
+    int mapped = map(vbat * 10.0, 33, 42, 0, NUM_LEDS);
     ledControl.Clear();
     CRGB c = CRGB::Green;
-    if(vbat >= 3.6 && vbat <= 3.9)
+    if (vbat >= 3.6 && vbat <= 3.9)
     {
         c = CRGB::Blue;
     }
 
-    if(vbat < 3.6)
+    if (vbat < 3.6)
     {
         c = CRGB::Red;
     }
 
-    for(int i = 0; i < mapped; i++)
+    for (int i = 0; i < mapped; i++)
     {
         ledControl.leds[i] = c;
     }
+
+    ledControl.addressingMode = Centered;
 
     ledControl.Refresh();
     delay(1000);
@@ -105,11 +109,8 @@ void showBatteryVoltage()
 
 void setup()
 {
-    Serial.begin(115200);
-
-    while(!imu.begin())
+    while (!imu.begin())
     {
-        Serial.println("Err");
     }
 
     imu.setupAccel(imu.LSM9DS1_ACCELRANGE_2G);
@@ -118,7 +119,7 @@ void setup()
     imu.setupGyro(imu.LSM9DS1_GYROSCALE_500DPS);
 
     ledControl.maxBrightness = brightnesses[0];
-    
+
     showBatteryVoltage();
 
     //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);
@@ -142,7 +143,7 @@ void loop()
     long renderStart = millis();
     base->update(configured);
 
-    if(!configured && millis() > 5000)
+    if (!configured && millis() > 5000)
     {
 
         int c = config.configure(&motionState, &ledControl);
@@ -185,11 +186,11 @@ void loop()
     ledControl.Refresh();
     int pushLag = millis() - pushStart;
 
-    Serial.print(motionLag);
-    Serial.print("\t");
-    Serial.print(renderLag);
-    Serial.print("\t");
-    Serial.print(pushLag);
-    Serial.print("\t");
-    Serial.println(millis() - start);
+    // Serial.print(motionLag);
+    // Serial.print("\t");
+    // Serial.print(renderLag);
+    // Serial.print("\t");
+    // Serial.print(pushLag);
+    // Serial.print("\t");
+    // Serial.println(millis() - start);
 }

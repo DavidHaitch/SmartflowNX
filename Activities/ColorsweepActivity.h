@@ -13,7 +13,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 0;
-        ledControl->directMode = false;
+        ledControl->addressingMode = Direct;
     }
 
     bool update(bool realMode)
@@ -30,12 +30,12 @@ public:
             offset++;
         }
 
-        for (int i = 0; i < NUM_LEDS; i++)
+        for (int i = 0; i < TRUE_LEDS; i++)
         {
             float r = baseDistance + (stepDistance * (i + 1));
             int color = inoise8(coord, r);
-            // color = qsub8(color, 16);
-            // color = qadd8(color, scale8(color, 39));
+            color = qsub8(color, 16);
+            color = qadd8(color, scale8(color, 39));
             ledControl->leds[i] = ColorFromPalette( palette, color + offset, 255, LINEARBLEND);
         }
          
@@ -49,8 +49,8 @@ private:
     long coord;
     int offset;
     long lastShiftTime;
-    int baseDistance = 200; // governs how drastically color changes with movement
-    int stepDistance = 500; //governs how different each pixel is from the one before it.
+    int baseDistance = 20; // governs how drastically color changes with movement
+    int stepDistance = 70; //governs how different each pixel is from the one before it.
     CRGBPalette16 palette;
 };
 #endif

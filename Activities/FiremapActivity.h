@@ -17,7 +17,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 4;
-        ledControl->directMode = true;
+        ledControl->addressingMode = Mirror;
     }
 
     bool update(bool realMode)
@@ -28,7 +28,7 @@ public:
             lastFireTick = now;
             int angVel = (motionState->angularVelocity * (180 / 3.14159));
             int spinout = 720;
-            for (int i = 0; i < NUM_LEDS / 2; i++)
+            for (int i = 0; i < TRUE_LEDS / 2; i++)
             {
                 int coolingFactor = map(angVel, 0, spinout, 4, 12);
                 int temperature = map(angVel, 0, spinout, 150, 240);
@@ -68,7 +68,7 @@ public:
             float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.33;
             if (centripetalAccel > abs(accel))
             {
-                for (int i = NUM_LEDS / 4; i > 0; i--)
+                for (int i = TRUE_LEDS / 4; i > 0; i--)
                 {
                     if (heat[i] >= 0 && heat[i - 1] >= 0)
                     {
@@ -76,7 +76,7 @@ public:
                         heat[i - 1] -= heat[i - 1] / 2;
                     }
                 }
-                for (int i = 0; i < (NUM_LEDS / 4); i++)
+                for (int i = 0; i < (TRUE_LEDS / 4); i++)
                 {
                     if (heat[i] >= 0 && heat[i + 1] >= 0)
                     {
@@ -89,7 +89,7 @@ public:
             {
                 if (motionState->rawAxialAccel > 0)
                 {
-                    for (int i = NUM_LEDS / 2; i > 0; i--)
+                    for (int i = TRUE_LEDS / 2; i > 0; i--)
                     {
                         if (heat[i] >= 0 && heat[i - 1] >= 0)
                         {
@@ -100,7 +100,7 @@ public:
                 }
                 else
                 {
-                    for (int i = 0; i < (NUM_LEDS / 2) - 1; i++)
+                    for (int i = 0; i < (TRUE_LEDS / 2) - 1; i++)
                     {
                         if (heat[i] >= 0 && heat[i + 1] >= 0)
                         {
@@ -114,7 +114,7 @@ public:
             }
         }
 
-        for (int i = 0; i < NUM_LEDS / 2; i++)
+        for (int i = 0; i < TRUE_LEDS / 2; i++)
         {
             if (heat[i] >= 0)
             {
@@ -137,7 +137,7 @@ public:
     }
 
 private:
-    int heat[NUM_LEDS];
+    int heat[TRUE_LEDS];
     long lastFireTick = 0;
     long lastFireRise = 0;
     CRGBPalette16 palette;

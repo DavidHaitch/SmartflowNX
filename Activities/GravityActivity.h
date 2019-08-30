@@ -11,7 +11,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 0;
-        ledControl->directMode = true;
+        ledControl->addressingMode = Mirror;
     }
 
     bool update(bool realMode)
@@ -29,7 +29,7 @@ public:
             if(centripetalAccel > abs(accel))
             {
                 accel = centripetalAccel;
-                if(dot < (NUM_LEDS / 2) * 50)
+                if(dot < (TRUE_LEDS / 2) * 50)
                 {
                     accel *= -1;
                 }
@@ -46,9 +46,9 @@ public:
                 speed = 0;
             }
 
-            if(dot > (NUM_LEDS / 2) * 100)
+            if(dot > (TRUE_LEDS / 2) * 100)
             {
-                dot = ((NUM_LEDS / 2) * 100) - 10;
+                dot = ((TRUE_LEDS / 2) * 100) - 10;
                 hue += abs(speed) / 32;
                 speed = 0;
             }
@@ -56,8 +56,8 @@ public:
             //if(abs(incline) < stickiness) speed = 0;
         }
 
-        float antiDot = ((NUM_LEDS / 2) * 100) - dot;
-        for (int i = 0; i < NUM_LEDS / 2; i++)
+        float antiDot = ((TRUE_LEDS / 2) * 100) - dot;
+        for (int i = 0; i < TRUE_LEDS / 2; i++)
         {
             float dist = abs((i * 100) - dot);
             float antiDist = abs((i * 100) - antiDot);

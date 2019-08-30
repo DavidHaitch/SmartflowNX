@@ -14,7 +14,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 4;
-        ledControl->directMode = false;
+        ledControl->addressingMode = Centered;
     }
 
     bool update(bool realMode)
@@ -28,12 +28,12 @@ public:
         int angVel = (motionState->angularVelocity * (180 / 3.14159));
         shift = motionState->orientation.getPitch();
 
-        for (int i = 0; i <= NUM_LEDS; i++)
+        for (int i = 0; i < NUM_LEDS; i++)
         {
-            float r = baseDistance + (stepDistance * (i + 1));
+            float r = baseDistance + (stepDistance * i);
             int c = inoise8(motionState->pointingX * r, motionState->pointingY * r, motionState->pointingZ * r);
             //int c2 = inoise8(secondSampleOffset + motionState->pointingX * r,secondSampleOffset + motionState->pointingY * r, secondSampleOffset + motionState->pointingZ * r);
-            CRGB color = ColorFromPalette(palette, c + shift + i, 255, NOBLEND);
+            CRGB color = ColorFromPalette(palette, c + shift + (i*4), 255, LINEARBLEND);
             ledControl->leds[i] = color;
         }
                 
@@ -47,7 +47,7 @@ public:
 private:
     long lastShiftDecay = 0;
     uint8_t shift = 0;
-    int baseDistance = 100; // governs how drastically color changes with movement
+    int baseDistance = 1; // governs how drastically color changes with movement
     int stepDistance = 1; //governs how different each pixel is from the one before it.
     CRGBPalette16 palette;
     CRGBPalette16 warmPalette;
