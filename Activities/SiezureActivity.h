@@ -14,7 +14,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = ledControl->maxBrightness / 16;
-        ledControl->directMode = false;
+        ledControl->addressingMode = Centered;
     }
 
     bool update(bool realMode)

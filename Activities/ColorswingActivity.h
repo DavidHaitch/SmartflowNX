@@ -12,7 +12,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 0;
-        ledControl->directMode = false;
+        ledControl->addressingMode = Centered;
     }
 
     bool update(bool realMode)

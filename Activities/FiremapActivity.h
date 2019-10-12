@@ -17,22 +17,22 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 4;
-        ledControl->directMode = true;
+        ledControl->addressingMode = Mirror;
     }
 
     bool update(bool realMode)
     {
         long now = millis();
-        if (now - lastFireTick > 10)
+        if (now - lastFireTick > 8)
         {
             lastFireTick = now;
             int angVel = (motionState->angularVelocity * (180 / 3.14159));
-            int spinout = 900;
+            int spinout = 720;
             for (int i = 0; i < TRUE_LEDS / 2; i++)
             {
-                int coolingFactor = map(angVel, 0, spinout, 2, 4);
-                int temperature = map(angVel, 0, spinout, 96, 192);
-                int heatChance = map(angVel, 0, spinout, 4, 8);
+                int coolingFactor = map(angVel, 0, spinout, 4, 12);
+                int temperature = map(angVel, 0, spinout, 150, 240);
+                int heatChance = map(angVel, 0, spinout, 4, 16);
                 if (angVel > spinout)
                 {
                     temperature /= 2;
@@ -58,31 +58,14 @@ public:
                     heat[i] += temperature;
                 }
             }
-
-            for (int i = 0; i < (TRUE_LEDS / 2); i++)
-            {
-                int removed = abs(heat[i]) / 32;
-                int originalHeat = heat[i];
-
-                if (i - 1 >= 0 && heat[i - 1] < originalHeat)
-                {
-                    heat[i] -= removed / 2;
-                    heat[i - 1] += removed / 2;
-                }
-                if (i + 1 <= (TRUE_LEDS / 2) && heat[i + 1] < originalHeat)
-                {
-                    heat[i] -= removed / 2;
-                    heat[i + 1] += removed / 2;
-                }
-            }
         }
 
-        if (now - lastFireRise > 10)
+        if (now - lastFireRise > 8)
         {
             lastFireRise = now;
             // cA = angVel^2 * radius
             float accel = motionState->rawAxialAccel * -1;
-            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.673;
+            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.33;
             if (centripetalAccel > abs(accel))
             {
                 for (int i = TRUE_LEDS / 4; i > 0; i--)
@@ -144,8 +127,8 @@ public:
             }
         }
 
-        blur1d(ledControl->leds, TRUE_LEDS / 2, 64);
-        blur1d(ledControl->leds, TRUE_LEDS / 2, 92);
+        //blur1d(ledControl->leds, NUM_LEDS / 2, 64);
+        //blur1d(ledControl->leds, NUM_LEDS / 2, 92);
         return true;
     }
 

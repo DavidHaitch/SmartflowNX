@@ -1,5 +1,6 @@
 #ifndef CONFIGMANAGER_H
 #define CONFIGMANAGER_H
+#include "HardwareType.h"
 #include "MotionState.h"
 class ConfigManager
 {
@@ -25,7 +26,14 @@ public:
             ledControl->leds[5 + i] = CRGB::White;
         }
 
-        if(motionState->jerk > 2.75 && now - lastSmackTime > 250)
+        #ifdef BATON
+        float smackThreshold = 10.0;
+        #endif
+        #ifdef STAFF
+        float smackThreshold = 2.75;
+        #endif
+
+        if(motionState->jerk > smackThreshold && now - lastSmackTime > 250)
         {
             lastSmackTime = now;
             smackCount++;

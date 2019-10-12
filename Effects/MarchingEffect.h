@@ -11,7 +11,7 @@ class MarchingEffect : public LedEffect
 
     bool apply(int param)
     {
-        if (millis() - lastUpdate > updateDelay)
+        if (millis() - lastUpdate >= updateDelay)
         {
             lastUpdate = millis();
             place++;
@@ -19,7 +19,7 @@ class MarchingEffect : public LedEffect
 
         for (int i = 0; i < NUM_LEDS; i++)
         {
-            if ((i + place) % (NUM_LEDS / 4) > 2)
+            if ((i + place) % (NUM_LEDS / 8) < 8)
             {
                 ledControl->leds[i] = CRGB::Black;
             }
@@ -31,6 +31,6 @@ class MarchingEffect : public LedEffect
   private:
     int place;
     long lastUpdate;
-    const int updateDelay = 10;
+    const int updateDelay = 0;
 };
 #endif

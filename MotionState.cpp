@@ -4,15 +4,39 @@ MotionState::MotionState()
     isEnabled = true;
 }
 
+#ifdef BATON
+int MotionState::Update(Adafruit_LSM9DS1* imu)
+#endif
+#ifdef STAFF
 int MotionState::Update(MPU9250* imu)
+#endif
 {
     if(!isEnabled) return 0;
     
-    int dT = millis() - lastUpdateTime;
-    int lag = 0;
-    imu->readSensor();
+    long now = millis();
+    int dT = now - lastUpdateTime;
+    lastUpdateTime = now;
 
-    // float cgX = imu->getGyroX_rads() / 8;
+    #ifdef BATON
+    imu->read();
+    sensors_event_t a, m, g, temp;
+    imu->getEvent(&a, &m, &g, &temp); 
+    float radConv = 3.14159 / 180.0;
+    float cgX = g.gyro.x * radConv;
+    float cgY = g.gyro.y * radConv;
+    float cgZ = g.gyro.z * radConv;
+
+    float caX = a.acceleration.x;
+    float caY = a.acceleration.y;
+    float caZ = a.acceleration.z;
+
+    float cmX = m.magnetic.x;
+    float cmY = m.magnetic.y;
+    float cmZ = m.magnetic.z;
+    #endif
+
+    #ifdef STAFF
+    imu->readSensor();
     float cgX = imu->getGyroX_rads();
     float cgY = imu->getGyroY_rads();
     float cgZ = imu->getGyroZ_rads();
@@ -24,18 +48,19 @@ int MotionState::Update(MPU9250* imu)
     float cmX = imu->getMagX_uT();
     float cmY = imu->getMagY_uT();
     float cmZ = imu->getMagZ_uT();
-    
+    #endif
+
     rawAxialAccel = caX;
 
     float deltat = orientation.deltatUpdate();
-    orientation.MadgwickUpdate(cgX, cgY, cgZ,
-            caX, caY, caZ,
-            cmX, cmY, cmZ,
-            deltat);
-
-    // orientation.MahonyUpdate(cgX, cgY, cgZ,
+    // orientation.MadgwickUpdate(cgX, cgY, cgZ,
     //         caX, caY, caZ,
+    //         cmX, cmY, cmZ,
     //         deltat);
+
+    orientation.MahonyUpdate(cgX, cgY, cgZ,
+            caX, caY, caZ,
+            deltat);
 
     float accel = abs(caX) + abs(caY) + abs(caZ);
     jerk = abs(accel - lastAccel);
@@ -65,18 +90,12 @@ int MotionState::Update(MPU9250* imu)
         maxAngularVelocity = angularVelocity;
         relativeAngularVelocity = 255;
     } 
-
-    if(maxAngularVelocity < 1 * angularVelocity)
-    {
-        //We don't have enough samples to really make sense.
-        relativeAngularVelocity = 0;
-    }
     else
     {
-        relativeAngularVelocity = (angularVelocity / maxAngularVelocity) * 255;
+        relativeAngularVelocity = (angularVelocity / maxAngularVelocity) * 255.0;        
     }
-
-    //maxAngularVelocity *= 0.999;
+    
+    maxAngularVelocity *= 0.99;
   
     angularAcceleration = abs(angularVelocity - lastAngularVelocity);
     lastAngularVelocity = angularVelocity;
@@ -108,5 +127,5 @@ int MotionState::Update(MPU9250* imu)
     // Serial.print(pointingY);
     // Serial.print(" ");
     // Serial.println(pointingZ);
-    return lag;
+    return dT;
 }

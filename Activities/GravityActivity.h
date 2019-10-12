@@ -11,7 +11,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 0;
-        ledControl->directMode = true;
+        ledControl->addressingMode = Mirror;
     }
 
     bool update(bool realMode)
@@ -24,7 +24,7 @@ public:
             float accel = motionState->rawAxialAccel * -1;
             
             // cA = angVel^2 * radius 
-            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.673;
+            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.33;
 
             if(centripetalAccel > abs(accel))
             {
