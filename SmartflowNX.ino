@@ -53,8 +53,8 @@ LedActivity *baseActivities[NUM_BASE_ACTIVITIES] =
         &firemap,
         &gravity,
         &colorsweep,
-        &zap,
         &plasma,
+        &zap,
         &colorswing};
 
 LedEffect *effects[NUM_BASE_ACTIVITIES] =
@@ -139,7 +139,6 @@ void setup()
     showBatteryVoltage();
     #endif
 
-    //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);
     base = baseActivities[0];
     base->enter(0);
     effect = effects[0];
@@ -169,7 +168,6 @@ void loop()
         if (c == 1)
         {
             ledControl.maxBrightness = brightnesses[config.options[0] % BRIGHTNESS_SETTINGS];
-            //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[config.options[0]%BRIGHTNESS_SETTINGS]);
             base = transitionActivity(base, base); //Reinit base activity with new settings.
         }
 

@@ -2,11 +2,12 @@
 #define PLASMAACTIVITY_H
 #include "LedActivity.h"
 
-#define qsuba(x, b)  ((x>b)?x-b:0)                          // Analog Unsigned subtraction macro. if result <0, then => 0
-#define STEP_DELAY 0
-class PlasmaActivity : public LedActivity {
+// Derived from https://github.com/johncarl81/neopixelplasma/blob/master/neopixelplasma.ino
+
+class PlasmaActivity : public LedActivity
+{
 public:
-    PlasmaActivity(MotionState* _motionState, LedControl* _ledControl) : LedActivity(_motionState, _ledControl)
+    PlasmaActivity(MotionState *_motionState, LedControl *_ledControl) : LedActivity(_motionState, _ledControl)
     {
     }
 
@@ -18,18 +19,42 @@ public:
 
     bool update(bool realMode)
     {
-        if(millis() - lastStepTime >= STEP_DELAY)
+        Point p1 = {(sin(phase * 1.000) + 1.0) * scale, (sin(phase * 1.310) + 1.0) * scale, (sin(phase * 1.290) + 1.0) * scale};
+        Point p2 = {(sin(phase * 1.770) + 1.0) * scale, (sin(phase * 2.865) + 1.0) * scale, (sin(phase * 2.597) + 1.0) * scale};
+        Point p3 = {(sin(phase * 0.250) + 1.0) * scale, (sin(phase * 0.750) + 1.0) * scale, (sin(phase * 1.866) + 1.0) * scale};
+        for (int i = 0; i < NUM_LEDS; i++)
         {
-            lastStepTime = millis();
-            int thisPhase = beatsin8(240,-64,64);                           // Setting phase change for a couple of waves.
-            int thatPhase = beatsin8(70,-64,64);
-            for (int k=0; k<NUM_LEDS; k++) {                              // For each of the LED's in the strand, set a brightness based on a wave as follows:
+            float r = baseDistance + (stepDistance * (float)i);
+            Point p = {motionState->pointingX * r, motionState->pointingY * r, motionState->pointingZ * r};
+            //Point p = {r,r,r};
 
-                int colorIndex = cubicwave8((k*23)+thisPhase)/2 + cos8((k*15)+thatPhase)/2;           // Create a wave and add a phase change and add another wave with its own phase change.. Hey, you can even change the frequencies if you wish.
-                int thisBright = qsuba(colorIndex, beatsin8(7,0,96));                                 // qsub gives it a bit of 'black' dead space by setting sets a minimum value. If colorIndex < current value of beatsin8(), then bright = 0. Otherwise, bright = colorIndex..
-                CRGB color = ColorFromPalette(PartyColors_p, colorIndex, thisBright, LINEARBLEND);  // Let's now add the foreground colour.
-                ledControl->leds[k] = color;
-            }
+            // Calculate the distance between this LED, and p1.
+            Point dist1 = {p.x - p1.x, p.y - p1.y, p.z - p1.z}; // The vector from p1 to this LED.
+            float distance1 = sqrt(dist1.x * dist1.x + dist1.y * dist1.y + dist1.z * dist1.z);
+
+            // Calculate the distance between this LED, and p2.
+            Point dist2 = {p.x - p2.x, p.y - p2.y, p.z - p2.z}; // The vector from p2 to this LED.
+            float distance2 = sqrt(dist2.x * dist2.x + dist2.y * dist2.y + dist2.z * dist2.z);
+
+            // Calculate the distance between this LED, and p3.
+            Point dist3 = {p.x - p3.x, p.y - p3.y, p.z - p3.z}; // The vector from p3 to this LED.
+            float distance3 = sqrt(dist3.x * dist3.x + dist3.y * dist3.y + dist3.z * dist3.z);
+
+            // Warp the distance with a sin() function. As the distance value increases, the LEDs will get light,dark,light,dark,etc...
+            // You can use a cos() for slightly different shading, or experiment with other functions. Go crazy!
+            float color_1 = distance1; // range: 0.0...1.0
+            float color_2 = distance2;
+            float color_3 = distance3;
+            float color_4 = (sin(distance1 * distance2 * colorStretch)) + 2.0 * 0.5;
+
+            // Square the color_f value to weight it towards 0. The image will be darker and have higher contrast.
+            color_1 *= color_1 * color_4;
+            color_2 *= color_2 * color_4;
+            color_3 *= color_3 * color_4;
+            color_4 *= color_4;
+
+            ledControl->leds[i] = CRGB(color_1, color_2, color_3);
+            //ledControl->leds[i].maximizeBrightness();
         }
 
         return true;
@@ -37,8 +62,20 @@ public:
 
     bool exit(int param)
     {
-    }    
+        return true;
+    }
+
 private:
-    long lastStepTime;
+    struct Point
+    {
+        float x;
+        float y;
+        float z;
+    };
+    float phase = 10.0;
+    float scale = 1.5;
+    float baseDistance = 1;
+    float stepDistance = 0.3;
+    const float colorStretch = 0.25; // Higher numbers will produce tighter color bands. I like 0.11 .
 };
 #endif
