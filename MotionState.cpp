@@ -4,13 +4,20 @@ MotionState::MotionState()
     isEnabled = true;
 }
 
+#ifdef BATON
 int MotionState::Update(Adafruit_LSM9DS1* imu)
+#endif
+#ifdef STAFF
+int MotionState::Update(MPU9250* imu)
+#endif
 {
     if(!isEnabled) return 0;
     
     long now = millis();
     int dT = now - lastUpdateTime;
     lastUpdateTime = now;
+
+    #ifdef BATON
     imu->read();
     sensors_event_t a, m, g, temp;
     imu->getEvent(&a, &m, &g, &temp); 
@@ -26,7 +33,23 @@ int MotionState::Update(Adafruit_LSM9DS1* imu)
     float cmX = m.magnetic.x;
     float cmY = m.magnetic.y;
     float cmZ = m.magnetic.z;
-    
+    #endif
+
+    #ifdef STAFF
+    imu->readSensor();
+    float cgX = imu->getGyroX_rads();
+    float cgY = imu->getGyroY_rads();
+    float cgZ = imu->getGyroZ_rads();
+
+    float caX = imu->getAccelX_mss();
+    float caY = imu->getAccelY_mss();
+    float caZ = imu->getAccelZ_mss();
+
+    float cmX = imu->getMagX_uT();
+    float cmY = imu->getMagY_uT();
+    float cmZ = imu->getMagZ_uT();
+    #endif
+
     rawAxialAccel = caX;
 
     float deltat = orientation.deltatUpdate();

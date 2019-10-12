@@ -1,7 +1,6 @@
 #ifndef LEDCONTROL_H
 #define LEDCONTROL_H
-
-#define BATON
+#include "HardwareType.h"
 
 //Defines that override FastLED defaults
 #ifdef BATON

@@ -1,4 +1,9 @@
-#define BATON
+#include "HardwareType.h"
+
+#ifdef STAFF
+#include "MPU9250.h"
+MPU9250 imu(Wire, 0x68);
+#endif
 
 #include <Wire.h>
 #include <SPI.h>
@@ -9,7 +14,9 @@
 #include "Activities.h"
 #include "Effects.h"
 
+#ifdef BATON
 Adafruit_LSM9DS1 imu = Adafruit_LSM9DS1();
+#endif
 
 MotionState motionState;
 LedControl ledControl;
@@ -71,6 +78,7 @@ long lastDebugPrint = 0;
 bool effectEnable = false;
 bool isIgniting = true;
 
+long setupEndTime = 0;
 float getBatteryVolts()
 {
     float measuredvbat = analogRead(A0);
@@ -109,6 +117,7 @@ void showBatteryVoltage()
 
 void setup()
 {
+    #ifdef BATON
     while (!imu.begin())
     {
     }
@@ -117,15 +126,25 @@ void setup()
 
     imu.setupMag(imu.LSM9DS1_MAGGAIN_4GAUSS);
     imu.setupGyro(imu.LSM9DS1_GYROSCALE_500DPS);
+#endif
+#ifdef STAFF
+    imu.begin();
+    imu.setAccelRange(MPU9250::ACCEL_RANGE_4G);
+    imu.setGyroRange(MPU9250::GYRO_RANGE_500DPS);
+#endif
 
     ledControl.maxBrightness = brightnesses[0];
 
+    #ifdef BATON
     showBatteryVoltage();
+    #endif
 
     //FastLED.setMaxPowerInVoltsAndMilliamps(3.7, powerLevels[0]);
     base = baseActivities[0];
     base->enter(0);
     effect = effects[0];
+
+    setupEndTime = millis();
 }
 
 LedActivity *transitionActivity(LedActivity *from, LedActivity *to)
@@ -143,9 +162,8 @@ void loop()
     long renderStart = millis();
     base->update(configured);
 
-    if (!configured && millis() > 5000)
+    if (!configured && millis() - setupEndTime > 5000)
     {
-
         int c = config.configure(&motionState, &ledControl);
 
         if (c == 1)
