@@ -19,9 +19,14 @@ void LedControl::Refresh()
     }
 
     lastUpdate = micros();
-
-    int midpointOne = (TRUE_LEDS / 4);
-    int midpointTwo = (TRUE_LEDS / 2) + midpointOne;
+#ifdef STAFF
+    int midpointOffset = 0;
+#endif
+#ifdef BATON
+    int midpointOffset = 1;
+#endif
+    int midpointOne = (TRUE_LEDS / 4) - midpointOffset;
+    int midpointTwo = (TRUE_LEDS / 2) + midpointOne + midpointOffset;
     uint8_t b = map(brightness, 0, 255, minBrightness, maxBrightness);
     FastLED.setBrightness(b);
 

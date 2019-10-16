@@ -11,4 +11,5 @@
 #include "Activities/PlasmaActivity.h"
 #include "Activities/ColorswingActivity.h"
 #include "Activities/GravityActivity.h"
+#include "Activities/FlashActivity.h"
 #endif

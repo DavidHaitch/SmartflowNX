@@ -74,8 +74,8 @@ private:
     };
     float phase = 10.0;
     float scale = 1.5;
-    float baseDistance = 1;
+    float baseDistance = 5;
     float stepDistance = 0.3;
-    const float colorStretch = 0.25; // Higher numbers will produce tighter color bands. I like 0.11 .
+    const float colorStretch = 0.05; // Higher numbers will produce tighter color bands. I like 0.11 .
 };
 #endif
