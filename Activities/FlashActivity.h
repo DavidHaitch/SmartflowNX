@@ -12,7 +12,7 @@ public:
     bool enter(int param)
     {
         ledControl->minBrightness = 0;
-        ledControl->addressingMode = Centered;
+        ledControl->addressingMode = Direct;
     }
 
     bool update(bool realMode)
@@ -31,7 +31,7 @@ public:
 
         CRGB color = CRGB::Black;
         if(flashing) color = CRGB::White;
-        for(int i = 0; i < NUM_LEDS; i++)
+        for(int i = 0; i < TRUE_LEDS; i++)
         {
             ledControl->leds[i] = color;
         }
@@ -47,7 +47,7 @@ public:
 private:
     bool flashing = false;
     long lastFlash = 0;
-    int flashDuration = 50;
-    int flashInterval = 5000;
+    int flashDuration = 100;
+    int flashInterval = 2000;
 };
 #endif
