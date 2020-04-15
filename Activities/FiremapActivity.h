@@ -1,6 +1,7 @@
 #ifndef FIREMAPACTIVITY_H
 #define FIREMAPACTIVITY_H
 #include "LedActivity.h"
+#include "../HardwareType.h"
 
 class FiremapActivity : public LedActivity
 {
@@ -65,7 +66,12 @@ public:
             lastFireRise = now;
             // cA = angVel^2 * radius
             float accel = motionState->rawAxialAccel * -1;
+#ifdef BATON
             float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.33;
+#endif
+#ifdef STAFF
+            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.66;
+#endif
             if (centripetalAccel > abs(accel))
             {
                 for (int i = TRUE_LEDS / 4; i > 0; i--)

@@ -1,6 +1,7 @@
 #ifndef GRAVITYACTIVITY_H
 #define GRAVITYACTIVITY_H
 #include "LedActivity.h"
+#include "../HardwareType.h"
 
 class GravityActivity : public LedActivity {
 public:
@@ -24,8 +25,12 @@ public:
             float accel = motionState->rawAxialAccel * -1;
             
             // cA = angVel^2 * radius 
+#ifdef BATON
             float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.33;
-
+#endif
+#ifdef STAFF
+            float centripetalAccel = (motionState->angularVelocity * motionState->angularVelocity) * 0.66;
+#endif
             if(centripetalAccel > abs(accel))
             {
                 accel = centripetalAccel;
